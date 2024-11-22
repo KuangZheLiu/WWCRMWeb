@@ -39,5 +39,6 @@ export default {
   padding: 15px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   height: 300px;
+  width: 800px;
 }
 </style>

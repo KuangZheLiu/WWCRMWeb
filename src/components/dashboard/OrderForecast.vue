@@ -20,19 +20,19 @@ export default defineComponent({
       new Chart(ctx, {
         type: 'line',
         data: {
-          labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+          labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
           datasets: [
             {
               label: '銷售額',
               borderColor: '#FC2525',
               backgroundColor: 'rgba(252, 37, 37, 0.3)',
-              data: [40, 39, 10, 40, 39, 80, 40]
+              data: [40, 39, 10, 40, 39, 80, 40, 39, 10, 40, 39, 80]
             },
             {
               label: '利潤',
               borderColor: '#05CBE1',
               backgroundColor: 'rgba(5, 203, 225, 0.3)',
-              data: [60, 55, 32, 10, 2, 12, 53]
+              data: [60, 55, 32, 10, 2, 12, 53, 60, 55, 32, 10, 60]
             }
           ]
         },

@@ -2,8 +2,11 @@
   <div class="dashboard">
     <h2>Dashboard</h2>
     <div class="dashboard-grid">
-      <div class="chart-card">
+      <div class="chart-card-order">
         <OrderForecast />
+      </div>
+      <div class="chart-card-product">
+        <ProductAnalysis />
       </div>
       <!-- 後續可添加更多圖表 -->
     </div>
@@ -12,11 +15,13 @@
 
 <script>
 import OrderForecast from './dashboard/OrderForecast.vue'
+import ProductAnalysis from './dashboard/ProductAnalysis.vue'
 
 export default {
   name: 'Dashboard',
   components: {
-    OrderForecast
+    OrderForecast,
+    ProductAnalysis
   }
 }
 </script>
@@ -33,7 +38,16 @@ export default {
   margin-top: 20px;
 }
 
-.chart-card {
+.chart-card-order {
+  background: white;
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  height: 300px;
+  width: 800px;
+}
+
+.chart-card-product {
   background: white;
   border-radius: 8px;
   padding: 15px;

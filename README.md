@@ -1,4 +1,4 @@
-# crm-vueweb
+# CRM Web
 
 ## 專案說明
 
@@ -52,8 +52,8 @@ npm run test:unit
 npm run lint
 ```
 
+```sh
 <!-- 設定資料庫連線 -->
-
 const sqlConfig = {
 user: process.env.DB_USER || 'root',
 password: process.env.DB_PASSWORD || 'root',
@@ -65,3 +65,4 @@ trustServerCertificate: true,
 encrypt: false
 }
 }
+```

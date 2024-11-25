@@ -1,12 +1,18 @@
 <template>
   <div class="chart-container">
+    <div class="date-picker">
+      <input type="month" v-model="startDate" @change="fetchData" />
+      <span>至</span>
+      <input type="month" v-model="endDate" @change="fetchData" />
+    </div>
     <canvas ref="chartRef"></canvas>
   </div>
 </template>
 
 <script>
 import { Chart, registerables } from 'chart.js'
-import { defineComponent, onMounted, ref } from 'vue'
+import { defineComponent, onMounted, ref, reactive } from 'vue'
+import axios from 'axios'
 
 Chart.register(...registerables)
 
@@ -14,78 +20,80 @@ export default defineComponent({
   name: 'ProductAnalysis',
   setup() {
     const chartRef = ref(null)
+    const chartInstance = ref(null)
+    const startDate = ref('2023-11')
+    const endDate = ref('2024-10')
+    const chartData = reactive({
+      labels: [],
+      datasets: []
+    })
 
-    onMounted(() => {
+    const formatYearMonth = (date) => {
+      return date.replace('-', '')
+    }
+
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('http://localhost:8002/api/analysis/product-analysis', {
+          params: {
+            comNo: 'TWTTH',
+            startDate: formatYearMonth(startDate.value),
+            endDate: formatYearMonth(endDate.value)
+          }
+        })
+
+        if (response.data.success) {
+          const data = response.data.data
+          const uniqueProducts = [...new Set(data.map(item => item.ProductType))]
+          const uniqueMonths = [...new Set(data.map(item => item.YM))].sort()
+
+          chartData.labels = uniqueMonths
+          chartData.datasets = uniqueProducts.map((product, index) => {
+            const colors = ['red', 'blue', 'green', 'purple', 'orange']
+            return {
+              label: product,
+              backgroundColor: colors[index % colors.length],
+              borderColor: colors[index % colors.length],
+              borderWidth: 1,
+              data: uniqueMonths.map(month => {
+                const record = data.find(item =>
+                  item.YM === month && item.ProductType === product
+                )
+                return record ? record.OrderCount : 0
+              })
+            }
+          })
+
+          updateChart()
+        }
+      } catch (error) {
+        console.error('獲取數據失敗:', error)
+      }
+    }
+
+    const updateChart = () => {
+      if (chartInstance.value) {
+        chartInstance.value.destroy()
+      }
+
       const ctx = chartRef.value.getContext('2d')
-      new Chart(ctx, {
+      chartInstance.value = new Chart(ctx, {
         type: 'bar',
-        data: {
-          labels: [
-                    "202311",
-                    "202312",
-                    "202401",
-                    "202402",
-                    "202403",
-                    "202404",
-                    "202405",
-                    "202406",
-                    "202407",
-                    "202408",
-                    "202409",
-                    "202410",
-                ],
-                datasets: [
-                    {
-                        label: "軟袋",
-                        backgroundColor: "red",
-                        borderColor: "red",
-                        borderWidth: 1,
-                        data: [41, 161, 34, 57, 33, 128, 60, 45, 165, 93, 58, 153]
-                    },
-                    {
-                        label: "輪袋",
-                        backgroundColor: "blue",
-                        borderColor: "blue",
-                        borderWidth: 1,
-                        data: [43, 132, 47, 57, 53, 69, 67, 52, 77, 109, 124, 63]
-                    },
-                    {
-                        label: "半成品",
-                        backgroundColor: "green",
-                        borderColor: "green",
-                        borderWidth: 1,
-                        data: [14, 11, 11, 4, 10, 18, 33, 9, 11, 4, 29, 19]
-                    },
-                    // {
-                    //     label: "Paid terrific",
-                    //     backgroundColor: "lightblue",
-                    //     borderColor: "lightblue",
-                    //     borderWidth: 1,
-                    //     data: [45, 88, 0, 41, 48, 69, 52, 61, 59, 69]
-                    // }
-                ]
-        },
+        data: chartData,
         options: {
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
             title: {
               display: true,
-              text: 'ProductAnalysis_TWTTH',
-              position: 'bottom',
+              text: '產品類別分析',
               font: {
-                size: 20,
+                size: 16,
                 weight: 'bold'
               }
             },
             legend: {
-              position: 'top',
-              labels: {
-                font: {
-                  size: 16,
-                  weight: 'bold'
-                }
-              }
+              position: 'top'
             }
           },
           scales: {
@@ -99,10 +107,17 @@ export default defineComponent({
           }
         }
       })
+    }
+
+    onMounted(() => {
+      fetchData()
     })
 
     return {
-      chartRef
+      chartRef,
+      startDate,
+      endDate,
+      fetchData
     }
   }
 })
@@ -113,5 +128,18 @@ export default defineComponent({
   position: relative;
   height: 100%;
   width: 100%;
+}
+
+.date-picker {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+input[type="month"] {
+  padding: 5px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
 }
 </style>

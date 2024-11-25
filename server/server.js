@@ -24,15 +24,17 @@ server.use((req, res, next) => {
   next()
 })
 
-const user = require('./api/userTest.js/index.js')
+const user = require('./api/userTest.js')
 const testdbRouter = require('./api/testdb.js')
 const crmdbRouter = require('./api/crmdb.js')
 const dbRouter = require('./api/db.js')
+const AnalysisDataRouter = require('./api/AnalysisData.js')
 
 // server.use('/', user)
 server.use('/testdb', testdbRouter)
 server.use('/api/crmdb', crmdbRouter) // 使用路由器中間件
 server.use('/api/db', dbRouter)
+server.use('/api/analysis', AnalysisDataRouter)
 
 //3.active server
 // server.listen(8002, () => {

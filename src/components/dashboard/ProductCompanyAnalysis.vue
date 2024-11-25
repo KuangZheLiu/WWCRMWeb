@@ -17,7 +17,7 @@ import axios from 'axios'
 Chart.register(...registerables)
 
 export default defineComponent({
-  name: 'CustomerAnalysis',
+  name: 'ProductCompanyAnalysis',
   setup() {
     const chartRef = ref(null)
     const chartInstance = ref(null)
@@ -34,9 +34,8 @@ export default defineComponent({
 
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:8002/api/analysis/customer-analysis', {
+        const response = await axios.get('http://localhost:8002/api/analysis/product-company-analysis', {
           params: {
-            comNo: 'TWTTH',
             startDate: formatYearMonth(startDate.value),
             endDate: formatYearMonth(endDate.value)
           }
@@ -44,24 +43,35 @@ export default defineComponent({
 
         if (response.data.success) {
           const data = response.data.data
-          const uniqueCustomers = [...new Set(data.map(item => item.CustomerName))]
           const uniqueMonths = [...new Set(data.map(item => item.YM))].sort()
+          const uniqueCompanies = [...new Set(data.map(item => item.ComNo))]
+          const uniqueProducts = [...new Set(data.map(item => item.ProductType))]
 
+          // 為每個產品類別創建數據集
           chartData.labels = uniqueMonths
-          chartData.datasets = uniqueCustomers.map((customer, index) => {
-            const colors = ['red', 'blue', 'green']
-            return {
-              label: customer,
-              backgroundColor: colors[index % colors.length],
-              borderColor: colors[index % colors.length],
-              borderWidth: 1,
-              data: uniqueMonths.map(month => {
-                const record = data.find(item =>
-                  item.YM === month && item.CustomerName === customer
-                )
-                return record ? record.OrderCount : 0
+          chartData.datasets = []
+
+          // 為每個公司和產品類別組合創建數據集
+          uniqueCompanies.forEach((company, companyIndex) => {
+            uniqueProducts.forEach((product, productIndex) => {
+              const colors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40']
+              const colorIndex = (companyIndex * uniqueProducts.length + productIndex) % colors.length
+
+              chartData.datasets.push({
+                label: `${company}-${product}`,
+                backgroundColor: colors[colorIndex],
+                borderColor: colors[colorIndex],
+                borderWidth: 1,
+                data: uniqueMonths.map(month => {
+                  const record = data.find(item =>
+                    item.YM === month &&
+                    item.ComNo === company &&
+                    item.ProductType === product
+                  )
+                  return record ? record.OrderCount : 0
+                })
               })
-            }
+            })
           })
 
           updateChart()
@@ -86,19 +96,18 @@ export default defineComponent({
           plugins: {
             title: {
               display: true,
-              text: 'CustomerAnalysis_TWTTH',
-              position: 'bottom',
+              text: '產品類別公司分布分析',
               font: {
-                size: 20,
+                size: 16,
                 weight: 'bold'
               }
             },
             legend: {
               position: 'top',
               labels: {
+                boxWidth: 12,
                 font: {
-                  size: 16,
-                  weight: 'bold'
+                  size: 11
                 }
               }
             }

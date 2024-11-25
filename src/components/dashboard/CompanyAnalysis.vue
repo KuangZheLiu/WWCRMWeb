@@ -17,7 +17,7 @@ import axios from 'axios'
 Chart.register(...registerables)
 
 export default defineComponent({
-  name: 'CustomerAnalysis',
+  name: 'CompanyAnalysis',
   setup() {
     const chartRef = ref(null)
     const chartInstance = ref(null)
@@ -34,9 +34,8 @@ export default defineComponent({
 
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:8002/api/analysis/customer-analysis', {
+        const response = await axios.get('http://localhost:8002/api/analysis/company-analysis', {
           params: {
-            comNo: 'TWTTH',
             startDate: formatYearMonth(startDate.value),
             endDate: formatYearMonth(endDate.value)
           }
@@ -44,20 +43,20 @@ export default defineComponent({
 
         if (response.data.success) {
           const data = response.data.data
-          const uniqueCustomers = [...new Set(data.map(item => item.CustomerName))]
+          const uniqueCompanies = [...new Set(data.map(item => item.ComNo))]
           const uniqueMonths = [...new Set(data.map(item => item.YM))].sort()
 
           chartData.labels = uniqueMonths
-          chartData.datasets = uniqueCustomers.map((customer, index) => {
-            const colors = ['red', 'blue', 'green']
+          chartData.datasets = uniqueCompanies.map((company, index) => {
+            const colors = ['#FF6384', '#36A2EB', '#FFCE56']
             return {
-              label: customer,
+              label: company,
               backgroundColor: colors[index % colors.length],
               borderColor: colors[index % colors.length],
               borderWidth: 1,
               data: uniqueMonths.map(month => {
                 const record = data.find(item =>
-                  item.YM === month && item.CustomerName === customer
+                  item.YM === month && item.ComNo === company
                 )
                 return record ? record.OrderCount : 0
               })
@@ -78,7 +77,7 @@ export default defineComponent({
 
       const ctx = chartRef.value.getContext('2d')
       chartInstance.value = new Chart(ctx, {
-        type: 'bar',
+        type: 'line',
         data: chartData,
         options: {
           responsive: true,
@@ -86,29 +85,18 @@ export default defineComponent({
           plugins: {
             title: {
               display: true,
-              text: 'CustomerAnalysis_TWTTH',
-              position: 'bottom',
+              text: '公司訂單趨勢分析',
               font: {
-                size: 20,
+                size: 16,
                 weight: 'bold'
               }
             },
             legend: {
-              position: 'top',
-              labels: {
-                font: {
-                  size: 16,
-                  weight: 'bold'
-                }
-              }
+              position: 'top'
             }
           },
           scales: {
-            x: {
-              stacked: true
-            },
             y: {
-              stacked: true,
               beginAtZero: true
             }
           }

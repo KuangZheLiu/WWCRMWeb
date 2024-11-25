@@ -75,122 +75,133 @@ async function getPagedInvData(filters = {}, page = 1, pageSize = 50) {
 }
 
 router.getPagedInvData = getPagedInvData
-
-router.get('/invdata', async (req, res) => {
+// 1. 按公司和客戶統計每月訂單數
+router.get('/customer-analysis', async (req, res) => {
   try {
-    const { page = 1, pageSize = 50, companyName, time, customerName } = req.query
+    const { comNo, startDate, endDate } = req.query
 
-    let whereClause = '1=1'
-    const params = {
-      offset: (page - 1) * pageSize,
-      pageSize: parseInt(pageSize),
-    }
-
-    if (companyName) {
-      whereClause += ' AND ComNo = @companyName'
-      params.companyName = companyName
-    }
-
-    if (time) {
-      whereClause += ' AND YM = @time'
-      params.time = time
-    }
-
-    if (customerName) {
-      whereClause += ' AND s01_03b = @customerName'
-      params.customerName = customerName
-    }
-
-    // 查詢總數
-    const countSql = `
-      SELECT COUNT(*) as total
-      FROM InvData
-      WHERE ${whereClause}
-    `
-    const countResult = await ExecSQL(countSql, params)
-    const total = countResult.recordset[0].total
-
-    // 查詢數據
-    const dataSql = `
+    const sql = `
       SELECT
-        ComNo,
         YM,
-        s01_03b,
-        s02_02,
-        ShipCostMoney,
-        ProfitRate,
-        InvMoney2
+        s01_03b as CustomerName,
+        COUNT(*) as OrderCount
       FROM InvData
-      WHERE ${whereClause}
-      ORDER BY YM DESC
-      OFFSET @offset ROWS
-      FETCH NEXT @pageSize ROWS ONLY
+      WHERE ComNo = @comNo
+        AND YM BETWEEN @startDate AND @endDate
+      GROUP BY YM, s01_03b
+      ORDER BY YM ASC
     `
-    const dataResult = await ExecSQL(dataSql, params)
+
+    const result = await ExecSQL(sql, {
+      comNo,
+      startDate,
+      endDate,
+    })
 
     res.json({
       success: true,
-      data: dataResult.recordset,
-      total,
-      page: parseInt(page),
-      pageSize: parseInt(pageSize),
+      data: result.recordset,
     })
   } catch (err) {
-    console.error('查詢錯誤:', err)
     res.status(500).json({
       success: false,
       error: err.message,
     })
   }
 })
-
-router.get('/comdata', async (req, res) => {
+// 2. 按公司和產品類別統計每月訂單數
+router.get('/product-analysis', async (req, res) => {
   try {
-    const { page = 1, pageSize = 50, companyName, customerName } = req.query
+    const { comNo, startDate, endDate } = req.query
 
-    let whereClause = '1=1'
-    const params = {
-      offset: (page - 1) * pageSize,
-      pageSize: parseInt(pageSize),
-    }
-
-    if (companyName) {
-      whereClause += ' AND ComNo = @companyName'
-      params.companyName = companyName
-    }
-
-    if (customerName) {
-      whereClause += ' AND ComName LIKE @customerName'
-      params.customerName = `%${customerName}%`
-    }
-
-    const countSql = `
-      SELECT COUNT(*) as total
-      FROM ComData
-      WHERE ${whereClause}
+    const sql = `
+      SELECT
+        YM,
+        b11_03 as ProductType,
+        COUNT(*) as OrderCount
+      FROM InvData
+      WHERE ComNo = @comNo
+        AND YM BETWEEN @startDate AND @endDate
+      GROUP BY YM, b11_03
+      ORDER BY YM ASC
     `
-    const countResult = await ExecSQL(countSql, params)
-    const total = countResult.recordset[0].total
 
-    const dataSql = `
-      SELECT *
-      FROM ComData
-      WHERE ${whereClause}
-      ORDER BY ComNo
-      OFFSET @offset ROWS
-      FETCH NEXT @pageSize ROWS ONLY
-    `
-    const dataResult = await ExecSQL(dataSql, params)
+    const result = await ExecSQL(sql, {
+      comNo,
+      startDate,
+      endDate,
+    })
 
     res.json({
       success: true,
-      data: dataResult.recordset,
-      total,
-      page: parseInt(page),
-      pageSize: parseInt(pageSize),
+      data: result.recordset,
     })
   } catch (err) {
-    console.error('查詢錯誤:', err)
+    res.status(500).json({
+      success: false,
+      error: err.message,
+    })
+  }
+})
+// 3. 按公司統計每月訂單總數
+router.get('/company-analysis', async (req, res) => {
+  try {
+    const { startDate, endDate } = req.query
+
+    const sql = `
+      SELECT
+        YM,
+        ComNo,
+        COUNT(*) as OrderCount
+      FROM InvData
+      WHERE YM BETWEEN @startDate AND @endDate
+      GROUP BY YM, ComNo
+      ORDER BY YM ASC
+    `
+
+    const result = await ExecSQL(sql, {
+      startDate,
+      endDate,
+    })
+
+    res.json({
+      success: true,
+      data: result.recordset,
+    })
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      error: err.message,
+    })
+  }
+})
+// 4. 按產品類別統計各公司每月訂單數
+router.get('/product-company-analysis', async (req, res) => {
+  try {
+    const { startDate, endDate } = req.query
+
+    const sql = `
+      SELECT
+        YM,
+        ComNo,
+        b11_03 as ProductType,
+        COUNT(*) as OrderCount
+      FROM InvData
+      WHERE YM BETWEEN @startDate AND @endDate
+      GROUP BY YM, ComNo, b11_03
+      ORDER BY YM ASC
+    `
+
+    const result = await ExecSQL(sql, {
+      startDate,
+      endDate,
+    })
+
+    res.json({
+      success: true,
+      data: result.recordset,
+    })
+  } catch (err) {
     res.status(500).json({
       success: false,
       error: err.message,

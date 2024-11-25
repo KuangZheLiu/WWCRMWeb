@@ -21,46 +21,48 @@ export default defineComponent({
         type: 'bar',
         data: {
           labels: [
-                    "Jan",
-                    "Feb",
-                    "Mar",
-                    "Apr",
-                    "May",
-                    "June",
-                    "July",
-                    "Aug",
-                    "Sep",
-                    "Oct"
+                    "202311",
+                    "202312",
+                    "202401",
+                    "202402",
+                    "202403",
+                    "202404",
+                    "202405",
+                    "202406",
+                    "202407",
+                    "202408",
+                    "202409",
+                    "202410",
                 ],
                 datasets: [
                     {
-                        label: "Organic terrific",
+                        label: "軟袋",
                         backgroundColor: "red",
                         borderColor: "red",
                         borderWidth: 1,
-                        data: [42, 56, 0, 52, 66, 87, 51, 42, 32, 88]
+                        data: [41, 161, 34, 57, 33, 128, 60, 45, 165, 93, 58, 153]
                     },
                     {
-                        label: "Soical terrific",
+                        label: "輪袋",
                         backgroundColor: "blue",
                         borderColor: "blue",
                         borderWidth: 1,
-                        data: [0, 52, 94, 62, 12, 45, 110, 52, 39, 75]
+                        data: [43, 132, 47, 57, 53, 69, 67, 52, 77, 109, 124, 63]
                     },
                     {
-                        label: "Referral terrific",
+                        label: "半成品",
                         backgroundColor: "green",
                         borderColor: "green",
                         borderWidth: 1,
-                        data: [0, 12, 0, 23, 87, 92, 63, 47, 29, 79]
+                        data: [14, 11, 11, 4, 10, 18, 33, 9, 11, 4, 29, 19]
                     },
-                    {
-                        label: "Paid terrific",
-                        backgroundColor: "lightblue",
-                        borderColor: "lightblue",
-                        borderWidth: 1,
-                        data: [45, 88, 0, 41, 48, 69, 52, 61, 59, 69]
-                    }
+                    // {
+                    //     label: "Paid terrific",
+                    //     backgroundColor: "lightblue",
+                    //     borderColor: "lightblue",
+                    //     borderWidth: 1,
+                    //     data: [45, 88, 0, 41, 48, 69, 52, 61, 59, 69]
+                    // }
                 ]
         },
         options: {
@@ -69,7 +71,7 @@ export default defineComponent({
           plugins: {
             title: {
               display: true,
-              text: 'Product Analysis',
+              text: 'ProductAnalysis_TWTTH',
               position: 'bottom',
               font: {
                 size: 20,

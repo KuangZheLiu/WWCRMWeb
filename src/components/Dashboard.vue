@@ -2,11 +2,11 @@
   <div class="dashboard">
     <h2>Dashboard</h2>
     <div class="dashboard-grid">
-      <div class="chart-card-order">
-        <OrderForecast />
+      <div class="chart-card-customerTWTTH">
+        <CustomerAnalysisTWTTH />
       </div>
-      <div class="chart-card-product">
-        <ProductAnalysis />
+      <div class="chart-card-productTWTTH">
+        <ProductAnalysisTWTTH />
       </div>
       <!-- 後續可添加更多圖表 -->
     </div>
@@ -14,14 +14,15 @@
 </template>
 
 <script>
-import OrderForecast from './dashboard/OrderForecast.vue'
-import ProductAnalysis from './dashboard/ProductAnalysis.vue'
+
+import CustomerAnalysisTWTTH from './dashboard/CustomerAnalysis_TWTTH.vue'
+import ProductAnalysisTWTTH from './dashboard/ProductAnalysis_TWTTH.vue'
 
 export default {
   name: 'Dashboard',
   components: {
-    OrderForecast,
-    ProductAnalysis
+    CustomerAnalysisTWTTH,
+    ProductAnalysisTWTTH
   }
 }
 </script>
@@ -38,7 +39,7 @@ export default {
   margin-top: 20px;
 }
 
-.chart-card-order {
+.chart-card-customerTWTTH {
   background: white;
   border-radius: 8px;
   padding: 15px;
@@ -47,7 +48,7 @@ export default {
   width: 800px;
 }
 
-.chart-card-product {
+.chart-card-productTWTTH {
   background: white;
   border-radius: 8px;
   padding: 15px;

@@ -1,90 +1,100 @@
 <template>
   <div class="app-container">
-    <div class="sidebar" :class="{ 'sidebar-collapsed': !showSidebar }">
-      <button class="toggle-btn" @click="toggleSidebar">
-        {{ showSidebar ? '<<' : '>>' }}
-      </button>
-      <nav class="nav-menu">
-        <router-link to="/">Dashboard</router-link>
-        <router-link to="/invdata">銷售資料</router-link>
-        <router-link to="/customer">客戶資料</router-link>
-      </nav>
-    </div>
-    <div class="main-content" :class="{ 'content-expanded': !showSidebar }">
+    <!-- Drawer Menu -->
+    <Drawer v-model:visible="visible">
+      <template #container="{ closeCallback }">
+        <div class="flex flex-col h-full">
+          <!-- Header -->
+          <div class="flex items-center justify-between px-6 pt-4 shrink-0">
+            <span class="inline-flex items-center gap-2">
+              <span class="font-semibold text-2xl text-primary">CRM System</span>
+            </span>
+            <span>
+              <Button type="button" @click="closeCallback" icon="pi pi-times" rounded outlined />
+            </span>
+          </div>
+
+          <!-- Menu Content -->
+          <div class="overflow-y-auto">
+            <ul class="list-none p-4 m-0">
+              <li>
+                <div class="p-4 flex items-center justify-between text-surface-500 dark:text-surface-400">
+                  <span class="font-medium">Main Menu</span>
+                </div>
+                <ul class="list-none p-0 m-0 overflow-hidden">
+                  <!-- Dashboard -->
+                  <li>
+                    <a
+                      v-ripple
+                      class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors"
+                      @click="handleNavigation('/')"
+                    >
+                      <i class="pi pi-home mr-2"></i>
+                      <span class="font-medium">Dashboard</span>
+                    </a>
+                  </li>
+
+                  <!-- Sales Data -->
+                  <li>
+                    <a
+                      v-ripple
+                      class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors"
+                      @click="handleNavigation('/invdata')"
+                    >
+                      <i class="pi pi-chart-line mr-2"></i>
+                      <span class="font-medium">Sales Data</span>
+                    </a>
+                  </li>
+
+                  <!-- Customer Data -->
+                  <li>
+                    <a
+                      v-ripple
+                      class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors"
+                      @click="handleNavigation('/customer')"
+                    >
+                      <i class="pi pi-users mr-2"></i>
+                      <span class="font-medium">Customer Data</span>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </template>
+    </Drawer>
+
+    <!-- Toggle Button -->
+    <Button icon="pi pi-bars" @click="visible = true" class="fixed top-4 left-4 z-50" />
+
+    <!-- Main Content -->
+    <div class="main-content">
       <router-view />
     </div>
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 
-export default {
-  data() {
-    return {
-      showSidebar: true
-    }
-  },
-  methods: {
-    toggleSidebar() {
-      this.showSidebar = !this.showSidebar
-    }
-  }
+const visible = ref(false)
+const router = useRouter()
+
+const handleNavigation = (path) => {
+  router.push(path)
+  visible.value = false
 }
 </script>
 
 <style scoped>
 .app-container {
-  display: flex;
   min-height: 100vh;
 }
 
-.sidebar {
-  width: 200px;
-  background-color: #2c3e50;
-  color: white;
-  transition: width 0.3s;
-  position: relative;
-}
-
-.sidebar-collapsed {
-  width: 50px;
-}
-
-.toggle-btn {
-  position: absolute;
-  right: 0;
-  top: 10px;
-  background: none;
-  border: none;
-  color: white;
-  cursor: pointer;
-}
-
-.nav-menu {
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.nav-menu a {
-  color: white;
-  text-decoration: none;
-  padding: 8px;
-  border-radius: 4px;
-}
-
-.nav-menu a.router-link-active {
-  background-color: #34495e;
-}
-
 .main-content {
-  flex: 1;
   padding: 20px;
-  transition: margin-left 0.3s;
-}
-
-.content-expanded {
-  margin-left: -150px;
+  padding-top: 80px;
 }
 </style>

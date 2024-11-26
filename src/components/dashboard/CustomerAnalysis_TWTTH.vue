@@ -2,7 +2,7 @@
   <div class="chart-container">
     <div class="date-picker">
       <input type="month" v-model="startDate" @change="fetchData" />
-      <span>至</span>
+      <span style="color: black; font-weight: bold;">-</span>
       <input type="month" v-model="endDate" @change="fetchData" />
     </div>
     <canvas ref="chartRef"></canvas>
@@ -49,7 +49,7 @@ export default defineComponent({
 
           chartData.labels = uniqueMonths
           chartData.datasets = uniqueCustomers.map((customer, index) => {
-            const colors = ['red', 'blue', 'green']
+            const colors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40']
             return {
               label: customer,
               backgroundColor: colors[index % colors.length],
@@ -87,7 +87,7 @@ export default defineComponent({
             title: {
               display: true,
               text: 'CustomerAnalysis_TWTTH',
-              position: 'bottom',
+              // position: 'bottom',
               font: {
                 size: 20,
                 weight: 'bold'
@@ -97,8 +97,8 @@ export default defineComponent({
               position: 'top',
               labels: {
                 font: {
-                  size: 16,
-                  weight: 'bold'
+                  size: 12,
+                  // weight: 'bold'
                 }
               }
             }

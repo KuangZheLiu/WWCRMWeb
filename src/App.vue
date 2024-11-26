@@ -34,7 +34,7 @@
                     </a>
                   </li>
 
-                  <!-- Sales Data -->
+                  <!-- Inventory Data -->
                   <li>
                     <a
                       v-ripple

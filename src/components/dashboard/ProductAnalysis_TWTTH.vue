@@ -2,7 +2,7 @@
   <div class="chart-container">
     <div class="date-picker">
       <input type="month" v-model="startDate" @change="fetchData" />
-      <span>至</span>
+      <span style="color: black; font-weight: bold;">-</span>
       <input type="month" v-model="endDate" @change="fetchData" />
     </div>
     <canvas ref="chartRef"></canvas>
@@ -49,7 +49,7 @@ export default defineComponent({
 
           chartData.labels = uniqueMonths
           chartData.datasets = uniqueProducts.map((product, index) => {
-            const colors = ['red', 'blue', 'green', 'purple', 'orange']
+            const colors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40']
             return {
               label: product,
               backgroundColor: colors[index % colors.length],
@@ -86,9 +86,9 @@ export default defineComponent({
           plugins: {
             title: {
               display: true,
-              text: '產品類別分析',
+              text: 'ProductAnalysis_TWTTH',
               font: {
-                size: 16,
+                size: 20,
                 weight: 'bold'
               }
             },
@@ -139,7 +139,7 @@ export default defineComponent({
 
 input[type="month"] {
   padding: 5px;
-  border: 1px solid #ddd;
+  border: 1px solid #000000;
   border-radius: 4px;
 }
 </style>

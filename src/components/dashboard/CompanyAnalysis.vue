@@ -2,7 +2,7 @@
   <div class="chart-container">
     <div class="date-picker">
       <input type="month" v-model="startDate" @change="fetchData" />
-      <span>至</span>
+      <span style="color: black; font-weight: bold;">-</span>
       <input type="month" v-model="endDate" @change="fetchData" />
     </div>
     <canvas ref="chartRef"></canvas>

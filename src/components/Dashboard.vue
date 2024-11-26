@@ -41,6 +41,7 @@ export default {
 
 <style scoped>
 .dashboard {
+  /* background-color: #f0f0f0; */
   padding: 20px;
 }
 
@@ -60,7 +61,7 @@ export default {
 .chart-card {
   background: white;
   border-radius: 12px; /* 增加圓角 */
-  padding: 25px; /* 增加內邊距 */
+  padding: 50px; /* 增加內邊距 */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   /* min-height: 450px; */
   height:100%;
@@ -85,8 +86,11 @@ export default {
 }
 
 .product-analysis {
-  height: 2000px;
-  width: 1000px;
+  /* height: 2000px; */
+  min-height: 2000px;
+  /* height: window: .innerHeight; */
+  /* width: 1000px; */
+  min-width: 100%;
   /* overflow: hidden; */
 }
 </style>

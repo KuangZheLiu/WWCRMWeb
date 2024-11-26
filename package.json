@@ -1,6 +1,6 @@
 {
   "name": "crm-vueweb",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "vite",
@@ -11,13 +11,17 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@primevue/themes": "^4.2.3",
     "async": "^3.2.6",
     "axios": "^1.7.7",
+    "chart.js": "^4.4.6",
     "cors": "^2.8.5",
     "ejs": "^3.1.10",
     "express": "^4.21.1",
     "mssql": "^11.0.1",
     "pinia": "^2.2.6",
+    "primeicons": "^7.0.0",
+    "primevue": "^4.2.3",
     "vue": "^3.5.12",
     "vue-router": "^4.4.5"
   },

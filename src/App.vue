@@ -42,7 +42,7 @@
                       @click="handleNavigation('/invdata')"
                     >
                       <i class="pi pi-chart-line mr-2"></i>
-                      <span class="font-medium">Sales Data</span>
+                      <span class="font-medium">Order Data</span>
                     </a>
                   </li>
 

@@ -28,13 +28,13 @@ const user = require('./api/userTest.js')
 const testdbRouter = require('./api/testdb.js')
 const crmdbRouter = require('./api/crmdb.js')
 const dbRouter = require('./api/db.js')
-const AnalysisDataRouter = require('./api/AnalysisData.js')
+const analysisDataRouter = require('./api/AnalysisData.js')
 
 // server.use('/', user)
 server.use('/testdb', testdbRouter)
 server.use('/api/crmdb', crmdbRouter) // 使用路由器中間件
 server.use('/api/db', dbRouter)
-server.use('/api/analysis', AnalysisDataRouter)
+server.use('/api/analysis', analysisDataRouter)
 
 //3.active server
 // server.listen(8002, () => {

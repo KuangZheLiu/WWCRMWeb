@@ -1,22 +1,43 @@
 <template>
-  <div class="chart-container">
-    <div class="filter-section">
-      <div class="company-select">
-        <select v-model="selectedCompany" @change="fetchData">
-          <option value="">選擇公司</option>
-          <option v-for="company in companies" :key="company" :value="company">
-            {{ company }}
-          </option>
-        </select>
+  <v-card class="h-100">
+    <v-card-title>客戶訂單分析</v-card-title>
+    <v-card-text>
+      <v-row class="mb-4">
+        <v-col cols="12" sm="4">
+          <v-select
+            v-model="selectedCompany"
+            :items="companies"
+            label="選擇公司"
+            @update:model-value="fetchData"
+            density="compact"
+          ></v-select>
+        </v-col>
+        <v-col cols="12" sm="8">
+          <div class="d-flex align-center">
+            <v-text-field
+              v-model="startDate"
+              type="month"
+              label="開始日期"
+              @update:model-value="fetchData"
+              density="compact"
+              class="mr-2"
+            ></v-text-field>
+            <span class="mx-2">-</span>
+            <v-text-field
+              v-model="endDate"
+              type="month"
+              label="結束日期"
+              @update:model-value="fetchData"
+              density="compact"
+            ></v-text-field>
+          </div>
+        </v-col>
+      </v-row>
+      <div class="chart-wrapper">
+        <canvas ref="chartRef"></canvas>
       </div>
-      <div class="date-picker">
-        <input type="month" v-model="startDate" @change="fetchData" />
-        <span style="color: black; font-weight: bold;">-</span>
-        <input type="month" v-model="endDate" @change="fetchData" />
-      </div>
-    </div>
-    <canvas ref="chartRef"></canvas>
-  </div>
+    </v-card-text>
+  </v-card>
 </template>
 
 <script>
@@ -143,35 +164,19 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.chart-container {
+.chart-wrapper {
   position: relative;
-  height: 100%;
+  height: calc(100% - 80px);
   width: 100%;
 }
 
-.filter-section {
+.v-card {
+  height: 100%;
+}
+
+.v-card-text {
+  height: calc(100% - 64px);
   display: flex;
-  gap: 20px;
-  align-items: center;
-  margin-bottom: 15px;
-}
-
-.company-select select {
-  padding: 5px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  min-width: 120px;
-}
-
-.date-picker {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
-input[type="month"] {
-  padding: 5px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  flex-direction: column;
 }
 </style>

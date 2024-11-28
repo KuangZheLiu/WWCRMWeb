@@ -1,12 +1,30 @@
 <template>
-  <div class="chart-container">
-    <div class="date-picker">
-      <input type="month" v-model="startDate" @change="fetchData" />
-      <span style="color: black; font-weight: bold;">-</span>
-      <input type="month" v-model="endDate" @change="fetchData" />
-    </div>
-    <canvas ref="chartRef"></canvas>
-  </div>
+  <v-card height="100%">
+    <v-card-title>公司訂單趨勢分析</v-card-title>
+    <v-card-text class="fill-height d-flex flex-column">
+      <div class="d-flex align-center mb-4">
+        <v-text-field
+          v-model="startDate"
+          type="month"
+          label="開始日期"
+          @update:model-value="fetchData"
+          density="compact"
+          class="mr-2"
+        ></v-text-field>
+        <span class="mx-2">-</span>
+        <v-text-field
+          v-model="endDate"
+          type="month"
+          label="結束日期"
+          @update:model-value="fetchData"
+          density="compact"
+        ></v-text-field>
+      </div>
+      <div class="chart-container flex-grow-1">
+        <canvas ref="chartRef"></canvas>
+      </div>
+    </v-card-text>
+  </v-card>
 </template>
 
 <script>
@@ -142,20 +160,17 @@ export default defineComponent({
 <style scoped>
 .chart-container {
   position: relative;
-  height: 100%;
   width: 100%;
+  height: 100%;
+  min-height: 300px;
 }
 
-.date-picker {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  margin-bottom: 15px;
+canvas {
+  width: 100% !important;
+  height: 100% !important;
 }
 
-input[type="month"] {
-  padding: 5px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+.v-card-text {
+  padding-bottom: 16px;
 }
 </style>

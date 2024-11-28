@@ -15,8 +15,11 @@
         <CompanyAnalysis />
       </div>
       <!-- 產品類別分析圖表 -->
-      <div class="chart-card product-analysis">
+      <!-- <div class="chart-card product-analysis">
         <ProductCompanyAnalysis />
+      </div> -->
+      <div class="chart-card customer-analysis-list">
+        <CustomerAnalysisList />
       </div>
     </div>
   </div>
@@ -27,6 +30,7 @@ import CustomerAnalysisTWTTH from './dashboard/CustomerAnalysis_TWTTH.vue'
 import ProductAnalysisTWTTH from './dashboard/ProductAnalysis_TWTTH.vue'
 import CompanyAnalysis from './dashboard/CompanyAnalysis.vue'
 import ProductCompanyAnalysis from './dashboard/ProductCompanyAnalysis.vue'
+import CustomerAnalysisList from './dashboard/CustomerAnalysisList.vue'
 
 export default {
   name: 'Dashboard',
@@ -34,7 +38,8 @@ export default {
     CustomerAnalysisTWTTH,
     ProductAnalysisTWTTH,
     CompanyAnalysis,
-    ProductCompanyAnalysis
+    ProductCompanyAnalysis,
+    CustomerAnalysisList,
   }
 }
 </script>
@@ -91,6 +96,11 @@ export default {
   /* height: window: .innerHeight; */
   /* width: 1000px; */
   min-width: 100%;
+  /* overflow: hidden; */
+}
+
+.customer-analysis-list {
+  height: 100%;
   /* overflow: hidden; */
 }
 </style>

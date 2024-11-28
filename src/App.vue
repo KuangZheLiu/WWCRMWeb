@@ -35,14 +35,16 @@
     </v-navigation-drawer>
 
     <!-- App Bar -->
-    <v-app-bar>
-      <v-app-bar-nav-icon
+    <!-- <v-app-bar collapse density="compact" color="primary">
+      < v-app-bar-nav-icon part  >
+      <v-toolbar-title>CRM System</v-toolbar-title>
+    </v-app-bar> -->
+    <v-app-bar-nav-icon
         @click="drawer = !drawer"
         :icon="drawer ? 'mdi-close' : 'mdi-menu'"
         class="hamburger-btn"
+        color="primary"
       ></v-app-bar-nav-icon>
-      <v-toolbar-title>CRM System</v-toolbar-title>
-    </v-app-bar>
 
     <!-- Main Content -->
     <v-main>
@@ -72,5 +74,10 @@ const handleNavigation = (path) => {
 
 .hamburger-btn:hover {
   transform: scale(1.1);
+}
+
+.v-main {
+  width: 1000px !important;
+  /* padding: 20px !important; */
 }
 </style>

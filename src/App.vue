@@ -1,100 +1,76 @@
 <template>
-  <div class="app-container">
-    <!-- Drawer Menu -->
-    <Drawer v-model:visible="visible">
-      <template #container="{ closeCallback }">
-        <div class="flex flex-col h-full">
-          <!-- Header -->
-          <div class="flex items-center justify-between px-6 pt-4 shrink-0">
-            <span class="inline-flex items-center gap-2">
-              <span class="font-semibold text-2xl text-primary">CRM System</span>
-            </span>
-            <span>
-              <Button type="button" @click="closeCallback" icon="pi pi-times" rounded outlined />
-            </span>
-          </div>
+  <v-app>
+    <!-- Navigation Drawer -->
+    <v-navigation-drawer v-model="drawer" temporary>
+      <v-list>
+        <v-list-item>
+          <v-list-item-title class="text-h6">
+            CRM System
+          </v-list-item-title>
+          <template v-slot:append>
+            <v-btn icon="mdi-chevron-left" @click="drawer = false"></v-btn>
+          </template>
+        </v-list-item>
 
-          <!-- Menu Content -->
-          <div class="overflow-y-auto">
-            <ul class="list-none p-4 m-0">
-              <li>
-                <div class="p-4 flex items-center justify-between text-surface-500 dark:text-surface-400">
-                  <span class="font-medium">Main Menu</span>
-                </div>
-                <ul class="list-none p-0 m-0 overflow-hidden">
-                  <!-- Dashboard -->
-                  <li>
-                    <a
-                      v-ripple
-                      class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors"
-                      @click="handleNavigation('/')"
-                    >
-                      <i class="pi pi-home mr-2"></i>
-                      <span class="font-medium">Dashboard</span>
-                    </a>
-                  </li>
+        <v-divider class="my-2"></v-divider>
 
-                  <!-- Inventory Data -->
-                  <li>
-                    <a
-                      v-ripple
-                      class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors"
-                      @click="handleNavigation('/invdata')"
-                    >
-                      <i class="pi pi-chart-line mr-2"></i>
-                      <span class="font-medium">Order Data</span>
-                    </a>
-                  </li>
+        <v-list-item
+          prepend-icon="mdi-view-dashboard"
+          title="Dashboard"
+          @click="handleNavigation('/')"
+        ></v-list-item>
 
-                  <!-- Customer Data -->
-                  <li>
-                    <a
-                      v-ripple
-                      class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-surface-100 dark:text-surface-0 dark:hover:bg-surface-800 duration-150 transition-colors"
-                      @click="handleNavigation('/customer')"
-                    >
-                      <i class="pi pi-users mr-2"></i>
-                      <span class="font-medium">Customer Data</span>
-                    </a>
-                  </li>
-                </ul>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </template>
-    </Drawer>
+        <v-list-item
+          prepend-icon="mdi-file-document-outline"
+          title="Order Data"
+          @click="handleNavigation('/invdata')"
+        ></v-list-item>
 
-    <!-- Toggle Button -->
-    <Button icon="pi pi-bars" @click="visible = true" class="fixed top-4 left-4 z-50" />
+        <v-list-item
+          prepend-icon="mdi-account-group"
+          title="Customer Data"
+          @click="handleNavigation('/customer')"
+        ></v-list-item>
+      </v-list>
+    </v-navigation-drawer>
+
+    <!-- App Bar -->
+    <v-app-bar>
+      <v-app-bar-nav-icon
+        @click="drawer = !drawer"
+        :icon="drawer ? 'mdi-close' : 'mdi-menu'"
+        class="hamburger-btn"
+      ></v-app-bar-nav-icon>
+      <v-toolbar-title>CRM System</v-toolbar-title>
+    </v-app-bar>
 
     <!-- Main Content -->
-    <div class="main-content">
+    <v-main>
       <router-view />
-    </div>
-  </div>
+    </v-main>
+  </v-app>
 </template>
 
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
-const visible = ref(false)
+const drawer = ref(false)
 const router = useRouter()
 
 const handleNavigation = (path) => {
   router.push(path)
-  visible.value = false
+  drawer.value = false
 }
 </script>
 
 <style scoped>
-.app-container {
-  min-height: 100vh;
+.hamburger-btn {
+  font-size: 24px;
+  transition: transform 0.3s ease;
 }
 
-.main-content {
-  padding: 20px;
-  padding-top: 80px;
+.hamburger-btn:hover {
+  transform: scale(1.1);
 }
 </style>

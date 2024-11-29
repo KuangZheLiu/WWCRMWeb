@@ -77,7 +77,7 @@ const handleNavigation = (path) => {
 }
 
 .v-main {
-  width: 1000px !important;
+  width: 1250px !important;
   /* padding: 20px !important; */
 }
 </style>

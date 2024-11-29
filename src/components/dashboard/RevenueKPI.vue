@@ -27,7 +27,7 @@ export default defineComponent({
   setup(props) {
     const chartRef = ref(null)
     const chartInstance = ref(null)
-    const defaultTarget = 400000000
+    const defaultTarget = 100000000
 
     const fetchData = async () => {
       try {
@@ -46,56 +46,64 @@ export default defineComponent({
     }
 
     const updateChart = (data) => {
-      if (chartInstance.value) {
-        chartInstance.value.destroy()
-      }
+  if (chartInstance.value) {
+    chartInstance.value.destroy()
+  }
 
-      const ctx = chartRef.value.getContext('2d')
-      chartInstance.value = new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: data.map(item => item.ComNo),
-          datasets: [
-            {
-              label: '實際營收',
-              data: data.map(item => item.totalRevenue),
-              backgroundColor: '#36A2EB'
-            },
-            {
-              label: '目標營收',
-              data: data.map(() => defaultTarget),
-              backgroundColor: '#FF6384'
-            }
-          ]
+  // 確保數據是數字類型且不為 null
+  const processedData = data.map(item => ({
+    ...item,
+    totalRevenue: Number(item.totalRevenue) || 0
+  }))
+
+  console.log('處理後的數據:', processedData) // 用於調試
+
+  const ctx = chartRef.value.getContext('2d')
+  chartInstance.value = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: processedData.map(item => item.ComNo),
+      datasets: [
+        {
+          label: '實際營收',
+          data: processedData.map(item => item.totalRevenue),
+          backgroundColor: '#36A2EB'
         },
-        options: {
-          indexAxis: 'y',
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            title: {
-              display: true,
-              text: `${props.selectedYear} 年度公司營收達成分析`,
-              font: {
-                size: 16,
-                weight: 'bold'
-              }
-            },
-            tooltip: {
-              callbacks: {
-                label: (context) => {
-                  const value = context.raw
-                  const achievement = context.datasetIndex === 0
-                    ? (value / defaultTarget * 100).toFixed(2) + '%'
-                    : '目標值'
-                  return `${context.dataset.label}: ${value.toLocaleString('zh-TW')} (${achievement})`
-                }
-              }
+        {
+          label: '目標營收',
+          data: processedData.map(() => defaultTarget),
+          backgroundColor: '#FF6384'
+        }
+      ]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        title: {
+          display: true,
+          text: `${props.selectedYear} 年度公司營收達成分析`,
+          font: {
+            size: 16,
+            weight: 'bold'
+          }
+        },
+        tooltip: {
+          callbacks: {
+            label: (context) => {
+              const value = context.raw
+              const achievement = context.datasetIndex === 0
+                ? (value / defaultTarget * 100).toFixed(2) + '%'
+                : '目標值'
+              return `${context.dataset.label}: ${value.toLocaleString('zh-TW')} (${achievement})`
             }
           }
         }
-      })
+      }
     }
+  })
+}
 
     watch(() => props.selectedYear, fetchData)
 
@@ -118,6 +126,6 @@ export default defineComponent({
 
 canvas {
   width: 100% !important;
-  height: 500px !important;
+  height: 700px !important;
 }
 </style>

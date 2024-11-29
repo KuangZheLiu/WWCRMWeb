@@ -90,7 +90,7 @@ const selectedCompany = ref('ALL')
 const companyOptions = ref([])
 const yearOptions = ref([])
 const totalRevenue = ref(0)
-const targetRevenue = ref(1200000000)
+const targetRevenue = ref(300000000)
 
 // 計算達成率
 const achievementRate = computed(() => {

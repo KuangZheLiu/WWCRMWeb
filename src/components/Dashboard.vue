@@ -4,7 +4,7 @@
 
     <!-- 上方統計區塊 -->
     <v-row class="mb-6">
-      <v-col cols="auto" md="auto" class="mb-4">
+      <v-col cols="auto" md="4" lg="4" class="mb-4">
         <v-select
           v-model="selectedYear"
           :items="yearOptions"
@@ -12,6 +12,8 @@
           density="compact"
           @update:model-value="fetchAllData"
         ></v-select>
+      </v-col>
+      <v-col cols="auto" md="4" lg="4" class="mb-4">
         <v-select
           v-model="selectedCompany"
           :items="companyOptions"
@@ -20,8 +22,10 @@
           @update:model-value="fetchAllData"
         ></v-select>
       </v-col>
+    </v-row>
 
-      <v-col cols="auto" md="auto">
+    <v-row>
+      <v-col cols="auto" md="auto" lg="auto">
         <v-card>
           <v-card-text>
             <div class="text-h6">總營收</div>
@@ -29,8 +33,7 @@
           </v-card-text>
         </v-card>
       </v-col>
-
-      <v-col cols="auto" md="auto">
+      <v-col cols="auto" md="auto" lg="auto">
         <v-card>
           <v-card-text>
             <div class="text-h6">目標營收</div>
@@ -38,14 +41,15 @@
           </v-card-text>
         </v-card>
       </v-col>
-
-      <v-col cols="12" md="4">
+      <v-col cols="auto" md="auto" lg="auto">
         <v-card>
           <v-card-text>
             <div class="text-h6">達成率</div>
             <div class="text-h4">{{ achievementRate }}%</div>
           </v-card-text>
         </v-card>
+      </v-col>
+      <v-col cols="12" md="6" lg="6" class="mb-4">
       </v-col>
     </v-row>
 

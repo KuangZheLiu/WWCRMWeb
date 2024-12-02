@@ -218,4 +218,46 @@ router.get('/company-revenue', async (req, res) => {
   }
 })
 
+// 獲取所有客戶列表
+router.get('/customers', async (req, res) => {
+  try {
+    const sql = `
+      SELECT DISTINCT s01_03b as CustomerName
+      FROM InvData
+      ORDER BY s01_03b
+    `
+    const result = await ExecSQL(sql)
+    res.json(result.recordset)
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      error: err.message,
+    })
+  }
+})
+
+// 根據公司獲取客戶列表
+router.get('/customers-by-company', async (req, res) => {
+  try {
+    const { comNo } = req.query
+    let sql = `
+      SELECT DISTINCT s01_03b as CustomerName
+      FROM InvData
+      WHERE 1=1
+    `
+    if (comNo) {
+      sql += ` AND ComNo = @comNo`
+    }
+    sql += ` ORDER BY s01_03b`
+
+    const result = await ExecSQL(sql, { comNo })
+    res.json(result.recordset)
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      error: err.message,
+    })
+  }
+})
+
 module.exports = router

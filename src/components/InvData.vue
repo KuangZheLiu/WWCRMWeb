@@ -1,265 +1,234 @@
-<!-- <script setup>
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
-</script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
+  <v-container fluid>
+    <h1 class="text-h4 mb-6">CRM 銷售資料</h1>
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
+    <!-- 篩選區域 -->
+    <v-card class="mb-6">
+      <v-card-text>
+        <v-row>
+          <v-col cols="12" md="3">
+            <v-select
+              v-model="filters.companyName"
+              :items="companies"
+              item-title="ComNo"
+              item-value="ComNo"
+              label="公司名稱"
+              clearable
+              density="compact"
+              @update:model-value="handleCompanyChange"
+            ></v-select>
+          </v-col>
 
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
-    </div>
-  </header>
+          <v-col cols="12" md="3">
+            <v-select
+              v-model="filters.customerName"
+              :items="customers"
+              item-title="CustomerName"
+              item-value="CustomerName"
+              label="客戶名稱"
+              clearable
+              density="compact"
+              :disabled="loading"
+            ></v-select>
+          </v-col>
 
-  <RouterView />
+          <v-col cols="12" md="4">
+            <v-row>
+              <v-col cols="6">
+                <v-text-field
+                  v-model="filters.startDate"
+                  type="month"
+                  label="開始時間"
+                  density="compact"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="6">
+                <v-text-field
+                  v-model="filters.endDate"
+                  type="month"
+                  label="結束時間"
+                  density="compact"
+                ></v-text-field>
+              </v-col>
+            </v-row>
+          </v-col>
+
+          <v-col cols="12" md="2" class="d-flex align-center">
+            <v-btn
+              color="primary"
+              block
+              @click="handleFilter"
+              :loading="loading"
+            >
+              搜尋
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-card-text>
+    </v-card>
+
+    <!-- 數據表格 -->
+    <v-card>
+      <v-data-table
+        v-model:items-per-page="pagination.pageSize"
+        :headers="headers"
+        :items="invData"
+        :loading="loading"
+        class="elevation-1"
+      >
+        <template v-slot:item="{ item }">
+          <tr>
+            <!-- <td>{{ item.ComNo }}</td>
+            <td>{{ item.YM }}</td>
+            <td>{{ item.s01_03b }}</td>
+            <td>{{ item.s02_02 }}</td>
+            <td>{{ formatCurrency(item.ShipCostMoney) }}</td>
+            <td>{{ item.ProfitRate }}%</td>
+            <td>{{ formatCurrency(item.InvMoney2) }}</td> -->
+            <td v-for="header in headers" :key="header.key">
+              {{ header.key.includes('Money') ? formatCurrency(item[header.key]) :
+                 header.key === 'ProfitRate' ? `${item[header.key]}%` :
+                 item[header.key] }}
+            </td>
+          </tr>
+        </template>
+      </v-data-table>
+    </v-card>
+  </v-container>
 </template>
-
-<style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
-}
-
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
-
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
-}
-</style> -->
-
-<!-- <script>
-export default {
-  data() {
-
-  },
-  methods:{
-    PrintInfo() {
-      alert("Test Click");
-    }
-  }
-}
-</script> -->
 
 <script>
 import axios from 'axios'
-import DataForm from './DataForm.vue'
-import DataList from './DataList.vue'
+import { nextTick } from 'vue'
 
 export default {
-  // Add components
-  components: {
-    DataForm,
-    DataList,
-  },
-  //
   data() {
-    // Add data return
     return {
-      showForm: false,
+      loading: false,
+      companies: [],
+      customers: [],
       invData: [],
       filters: {
         companyName: '',
-        time: '',
-        customerName: ''
+        customerName: '',
+        startDate: '',
+        endDate: ''
       },
       pagination: {
-        currentPage: 1,
-        pageSize: 50,
-        total: 0
-      }
+        pageSize: 50
+      },
+      headers: [
+        { title: '公司名稱', key: 'ComNo' },
+        { title: '時間', key: 'YM' },
+        { title: '客戶名稱', key: 's01_03b' },
+        { title: '品名', key: 's02_02' },
+        { title: '銷貨成本', key: 'ShipCostMoney' },
+        { title: '毛利率', key: 'ProfitRate' },
+        { title: '原幣銷貨額', key: 'InvMoney2' }
+      ],
+      dataCache: new Map(), // 添加緩存
+      cacheTimeout: 5 * 60 * 1000, // 緩存時間 5 分鐘
     }
-    //
   },
   methods: {
-    // PrintInfo() {
-    //   // axios.get('http://localhost:8002/info')
-    //   axios.get('http://localhost:8002/testdb/dbinfo').then((res) => {
-    //     alert(res.data)
-    //   })
-    // },
-    // InsertData() {
-    //   // axios.get('http://localhost:8002/info')
-    //   axios.get('http://localhost:8002/api/crmdb/query').then((res) => {
-    //     alert(res.data)
-    //   })
-    // },
-
-    // Catch Data from CRMDB
-    async fetchInvData() {
+    formatCurrency(value) {
+      return new Intl.NumberFormat('zh-TW', {
+        style: 'currency',
+        currency: 'TWD',
+        minimumFractionDigits: 0
+      }).format(value)
+    },
+    async handleCompanyChange(value) {
+      this.filters.customerName = ''
+      if (value) {
+        await this.fetchCustomers(value)
+      } else {
+        this.customers = []
+      }
+    },
+    async fetchCompanies() {
       try {
-        const params = new URLSearchParams({
-          page: this.pagination.currentPage,
-          pageSize: this.pagination.pageSize,
-          ...this.filters
+        const response = await axios.get('http://localhost:8002/api/analysis/companies')
+        this.companies = response.data
+      } catch (error) {
+        console.error('獲取公司列表失敗:', error)
+      }
+    },
+    async fetchCustomers(comNo) {
+      try {
+        const response = await axios.get('http://localhost:8002/api/analysis/customers-by-company', {
+          params: { comNo }
         })
+        this.customers = response.data
+      } catch (error) {
+        console.error('獲取客戶列表失敗:', error)
+      }
+    },
+    getCacheKey(params) {
+      return JSON.stringify(params)
+    },
 
-        const response = await axios.get(`http://localhost:8002/api/db/invdata?${params}`)
+    isValidCache(cacheTime) {
+      return Date.now() - cacheTime < this.cacheTimeout
+    },
 
+    async fetchInvData() {
+      this.loading = true
+      try {
+        const params = this.buildParams()
+        const cacheKey = this.getCacheKey(params)
+
+        // 檢查緩存
+        const cachedData = this.dataCache.get(cacheKey)
+        if (cachedData && this.isValidCache(cachedData.timestamp)) {
+          this.invData = cachedData.data
+          this.loading = false
+          return
+        }
+
+        const response = await axios.get(`http://localhost:8002/api/db/invdata`, { params })
         if (response.data.success) {
           this.invData = response.data.data
-          this.pagination.total = response.data.total
-        } else {
-          console.error('獲取數據失敗:', response.data.error)
+          // 設置緩存
+          this.dataCache.set(cacheKey, {
+            data: response.data.data,
+            timestamp: Date.now()
+          })
         }
       } catch (error) {
-        console.error('請求錯誤:', error)
+        console.error('獲取數據失敗:', error)
+      } finally {
+        this.loading = false
       }
     },
 
-    handlePageChange(page) {
-      this.pagination.currentPage = page
-      this.fetchInvData()
+    buildParams() {
+      const params = {}
+      if (this.filters.companyName?.trim()) {
+        params.companyName = this.filters.companyName.trim()
+      }
+      if (this.filters.customerName?.trim()) {
+        params.customerName = this.filters.customerName.trim()
+      }
+      if (this.filters.startDate?.trim()) {
+        params.startDate = this.filters.startDate.trim().replace('-', '')
+      }
+      if (this.filters.endDate?.trim()) {
+        params.endDate = this.filters.endDate.trim().replace('-', '')
+      }
+      return params
     },
-
     handleFilter() {
-      this.pagination.currentPage = 1
       this.fetchInvData()
-    },
-    // <!-- Add toggleForm -->
-    toggleForm() {
-      this.showForm = !this.showForm
-    },
-    handleSubmitSuccess() {
-      this.showForm = false
-      this.$refs.dataList.fetchData()
-    },
+    }
   },
+  async mounted() {
+    await this.fetchCompanies()
+    await this.fetchInvData()
+  }
 }
 </script>
-
-<template>
-  <main>
-    <!-- <button @click="PrintInfo">Get Info</button> -->
-    <!-- <button @click="InsertData">Get DB Info</button> -->
-
-    <!-- <div class="controls">
-      <button @click="toggleForm">{{ showForm ? '隱藏表單' : '新增資料' }}</button>
-    </div> -->
-
-    <!-- <DataForm v-if="showForm" @submit-success="handleSubmitSuccess" />
-    <DataList ref="dataList" /> -->
-    <div class="container">
-    <h1>CRM 銷售資料</h1>
-
-    <!-- 篩選區域 -->
-    <div class="filter-section">
-      <input v-model="filters.companyName" placeholder="公司名稱" />
-      <input v-model="filters.time" placeholder="時間 (YYYYMM)" />
-      <input v-model="filters.customerName" placeholder="客戶名稱" />
-      <button @click="handleFilter">搜尋</button>
-    </div>
-
-    <!-- 新增按鈕 -->
-    <!-- <div class="controls">
-      <button @click="toggleForm">{{ showForm ? '隱藏表單' : '新增資料' }}</button>
-    </div> -->
-
-    <!-- 表單組件 -->
-    <DataForm v-if="showForm" @submit-success="handleSubmitSuccess" />
-
-    <!-- 數據表格 -->
-    <table class="data-table">
-      <thead>
-        <tr>
-          <th>公司名稱</th>
-          <th>時間</th>
-          <th>客戶名稱</th>
-          <th>品名</th>
-          <th>銷貨成本</th>
-          <th>毛利率</th>
-          <th>原幣銷貨額</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="item in invData" :key="item.ComNo">
-          <td>{{ item.ComNo }}</td>
-          <td>{{ item.YM }}</td>
-          <td>{{ item.s01_03b }}</td>
-          <td>{{ item.s02_02 }}</td>
-          <td>{{ item.ShipCostMoney }}</td>
-          <td>{{ item.ProfitRate }}%</td>
-          <td>{{ item.InvMoney2 }}</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <!-- 分頁控制 -->
-    <div class="pagination">
-      <button
-        :disabled="pagination.currentPage === 1"
-        @click="handlePageChange(pagination.currentPage - 1)"
-      >
-        上一頁
-      </button>
-      <span>第 {{ pagination.currentPage }} 頁</span>
-      <button
-        :disabled="pagination.currentPage * pagination.pageSize >= pagination.total"
-        @click="handlePageChange(pagination.currentPage + 1)"
-      >
-        下一頁
-      </button>
-      <span>共 {{ Math.ceil(pagination.total / pagination.pageSize) }} 頁</span>
-    </div>
-  </div>
-  </main>
-</template>
 
 <style scoped>
 .container {

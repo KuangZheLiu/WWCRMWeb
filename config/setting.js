@@ -16,6 +16,7 @@ module.exports = {
       database: 'WWCRM',
       options: {
         trustServerCertificate: true,
+        requestTimeout: 5 * 60 * 1000,
         // encrypt: true, // Use this if you're on Windows Azure
       },
     },

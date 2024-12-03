@@ -2,25 +2,44 @@
   <v-app>
     <!-- Navigation Drawer -->
     <v-navigation-drawer v-model="drawer" temporary>
-      <v-list>
+      <v-list >
         <v-list-item>
           <v-list-item-title class="text-h6">
-            CRM System
+            CRM Website
           </v-list-item-title>
           <template v-slot:append>
+            <!-- v-slot:append 這裡的內容會顯示在列表項的後面 -->
             <v-btn icon="mdi-chevron-left" @click="drawer = false"></v-btn>
           </template>
         </v-list-item>
 
+        <v-list-item v-if="userStore.isLoggedIn">
+          <template v-slot:prepend>
+            <!-- v-slot:prepend 這裡的內容會顯示在列表項的前面 -->
+            <v-avatar color="primary">
+              <v-img :src="userStore.user?.avatar" alt="avatar"></v-img>
+            </v-avatar>
+          </template>
+          <v-list-item-title>
+            {{ userStore.user?.firstname }} {{ userStore.user?.lastname }}
+          </v-list-item-title>
+          <v-list-item-subtitle>
+            {{ userStore.user?.role }}
+          </v-list-item-subtitle>
+        </v-list-item>
+
         <v-divider class="my-2"></v-divider>
 
+        <!-- 選單項目 -->
         <v-list-item
+          v-if="userStore.userRole === 'admin'"
           prepend-icon="mdi-view-dashboard"
           title="Dashboard"
           @click="handleNavigation('/')"
         ></v-list-item>
 
         <v-list-item
+          v-if="userStore.userRole === 'admin'"
           prepend-icon="mdi-file-document-outline"
           title="Order Data"
           @click="handleNavigation('/invdata')"
@@ -30,6 +49,15 @@
           prepend-icon="mdi-account-group"
           title="Customer Data"
           @click="handleNavigation('/customer')"
+        ></v-list-item>
+
+        <v-divider class="my-2"></v-divider>
+
+        <!-- 登出按鈕 -->
+        <v-list-item
+          prepend-icon="mdi-logout"
+          title="Logout"
+          @click="handleLogout"
         ></v-list-item>
       </v-list>
     </v-navigation-drawer>
@@ -56,12 +84,20 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useUserStore } from './stores/user'
 
 const drawer = ref(false)
 const router = useRouter()
+const userStore = useUserStore()
 
 const handleNavigation = (path) => {
   router.push(path)
+  drawer.value = false
+}
+
+const handleLogout = async () => {
+  await userStore.logout()
+  router.push('/login')
   drawer.value = false
 }
 </script>

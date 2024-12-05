@@ -179,4 +179,8 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
 }
+
+canvas {
+  height: 500px !important;
+}
 </style>

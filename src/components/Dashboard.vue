@@ -67,6 +67,14 @@
         />
       </v-col>
     </v-row>
+    <v-row>
+      <v-col cols="12" lg="12">
+        <CustomerAnalysisList
+          :selected-year="selectedYear"
+          :selected-company="selectedCompany"
+        />
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
@@ -76,6 +84,7 @@ import axios from 'axios'
 import CompanyAnalysis from './dashboard/CompanyAnalysis.vue'
 import RevenueKPI from './dashboard/RevenueKPI.vue'
 
+import CustomerAnalysisList from './dashboard/CustomerAnalysisList.vue'
 // import CustomerAnalysisTWTTH from './dashboard/CustomerAnalysis_TWTTH.vue'
 // import ProductAnalysisTWTTH from './dashboard/ProductAnalysis_TWTTH.vue'
 // import CompanyAnalysis from './dashboard/CompanyAnalysis.vue'

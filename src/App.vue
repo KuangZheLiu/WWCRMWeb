@@ -2,6 +2,7 @@
   <v-app>
     <!-- Navigation Drawer -->
     <v-navigation-drawer v-model="drawer" temporary>
+      <!-- temporary 是為了讓 drawer 可以被點擊關閉 -->
       <v-list >
         <v-list-item>
           <v-list-item-title class="text-h6">
@@ -87,6 +88,7 @@ import { useRouter } from 'vue-router'
 import { useUserStore } from './stores/user'
 
 const drawer = ref(false)
+// const rail = ref(true)
 const router = useRouter()
 const userStore = useUserStore()
 

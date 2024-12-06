@@ -4,7 +4,7 @@
 
     <!-- 上方統計區塊 -->
     <v-row class="mb-6">
-      <v-col cols="auto" md="4" lg="4" class="mb-4">
+      <v-col cols="auto" md="auto" lg="auto" class="">
         <v-select
           v-model="selectedYear"
           :items="yearOptions"
@@ -13,7 +13,7 @@
           @update:model-value="fetchAllData"
         ></v-select>
       </v-col>
-      <v-col cols="auto" md="4" lg="4" class="mb-4">
+      <v-col cols="auto" md="auto" lg="auto" class="">
         <v-select
           v-model="selectedCompany"
           :items="companyOptions"
@@ -28,24 +28,24 @@
       <v-col cols="auto" md="auto" lg="auto">
         <v-card>
           <v-card-text>
-            <div class="text-h6">總營收</div>
-            <div class="text-h4">{{ formatCurrency(totalRevenue) }}</div>
+            <div class="text-center">總營收</div>
+            <div class="text-center">{{ formatCurrency(totalRevenue) }}K</div>
           </v-card-text>
         </v-card>
       </v-col>
       <v-col cols="auto" md="auto" lg="auto">
         <v-card>
           <v-card-text>
-            <div class="text-h6">目標營收</div>
-            <div class="text-h4">{{ formatCurrency(targetRevenue) }}</div>
+            <div class="text-center">目標營收</div>
+            <div class="text-center">{{ formatCurrency(targetRevenue) }}K</div>
           </v-card-text>
         </v-card>
       </v-col>
       <v-col cols="auto" md="auto" lg="auto">
         <v-card>
           <v-card-text>
-            <div class="text-h6">達成率</div>
-            <div class="text-h4">{{ achievementRate }}%</div>
+            <div class="text-center">達成率</div>
+            <div class="text-center">{{ achievementRate }}%</div>
           </v-card-text>
         </v-card>
       </v-col>
@@ -55,20 +55,20 @@
 
     <!-- 下方圖表區塊 -->
     <v-row>
-      <v-col cols="12" lg="6">
+      <v-col cols="12" lg="6" md="5">
         <CompanyAnalysis
           :selected-year="selectedYear"
           :selected-company="selectedCompany"
         />
       </v-col>
-      <v-col cols="12" lg="6">
+      <v-col cols="12" lg="6" md="5" xl="3">
         <RevenueKPI
           :selected-year="selectedYear"
         />
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="12" lg="12">
+      <v-col cols="12" lg="6" md="5" xl="3">
         <CustomerAnalysisList
           :selected-year="selectedYear"
           :selected-company="selectedCompany"
@@ -115,7 +115,8 @@ const formatCurrency = (value) => {
   return new Intl.NumberFormat('zh-TW', {
     style: 'currency',
     currency: 'TWD',
-    minimumFractionDigits: 0
+    minimumFractionDigits: 0,
+    // maximumSignificantDigits: 2
   }).format(value)
 }
 
@@ -168,7 +169,16 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.v-container{
+  background-color: rgb(193, 190, 190);
+  width: auto;
+}
+
 .v-col {
   min-height: 100%;
+}
+
+.v-select {
+  /* color: white; */
 }
 </style>

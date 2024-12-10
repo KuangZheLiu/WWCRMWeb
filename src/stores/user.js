@@ -10,7 +10,7 @@ export const useUserStore = defineStore('user', {
         firstname: 'Light',
         lastname: 'Liu',
         avatar: '../assets/admin.png',
-        role: 'admin',
+        role: 'Admin',
       },
       {
         username: 'test',
@@ -18,7 +18,7 @@ export const useUserStore = defineStore('user', {
         firstname: 'Alex',
         lastname: 'Lee',
         avatar: '../assets/user.png',
-        role: 'user',
+        role: 'Sales',
       },
     ],
   }),

@@ -52,7 +52,7 @@ const handleLogin = async () => {
     if (success) {
       // 根據用戶角色決定跳轉頁面
       if (userStore.userRole === 'admin') {
-        router.push('/')
+        router.push('/dashboard')
       } else {
         router.push('/customer')
       }

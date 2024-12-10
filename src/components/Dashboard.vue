@@ -1,10 +1,13 @@
 <template>
   <v-container fluid>
     <h2 class="text-h4 mb-6">儀表板 Dashboard</h2>
+    <!-- 添加這一行來顯示子路由內容 -->
+    <router-view v-if="$route.path !== '/dashboard'" />
 
-    <!-- 上方統計區塊 -->
-    <v-row class="mb-6">
-      <v-col cols="auto" md="auto" lg="auto" class="">
+    <template v-else>
+      <!-- 上方統計區塊 -->
+      <v-row class="mb">
+        <v-col cols="auto" md="auto" lg="auto" class="">
         <v-select
           v-model="selectedYear"
           :items="yearOptions"
@@ -29,7 +32,7 @@
         <v-card>
           <v-card-text>
             <div class="text-center">總營收</div>
-            <div class="text-center">{{ formatCurrency(totalRevenue) }}K</div>
+            <div class="text-center">{{ formatCurrency(totalRevenue/1000) }}K</div>
           </v-card-text>
         </v-card>
       </v-col>
@@ -37,7 +40,7 @@
         <v-card>
           <v-card-text>
             <div class="text-center">目標營收</div>
-            <div class="text-center">{{ formatCurrency(targetRevenue) }}K</div>
+            <div class="text-center">{{ formatCurrency(targetRevenue/1000) }}K</div>
           </v-card-text>
         </v-card>
       </v-col>
@@ -72,9 +75,10 @@
         <CustomerAnalysisList
           :selected-year="selectedYear"
           :selected-company="selectedCompany"
-        />
-      </v-col>
-    </v-row>
+          />
+        </v-col>
+      </v-row>
+    </template>
   </v-container>
 </template>
 
@@ -103,7 +107,7 @@ const selectedCompany = ref('ALL')
 const companyOptions = ref([])
 const yearOptions = ref([])
 const totalRevenue = ref(0)
-const targetRevenue = ref(300000000)
+const targetRevenue = ref(30000000)
 
 // 計算達成率
 const achievementRate = computed(() => {
@@ -114,7 +118,7 @@ const achievementRate = computed(() => {
 const formatCurrency = (value) => {
   return new Intl.NumberFormat('zh-TW', {
     style: 'currency',
-    currency: 'TWD',
+    currency: 'USD',
     minimumFractionDigits: 0,
     // maximumSignificantDigits: 2
   }).format(value)
@@ -179,6 +183,12 @@ onMounted(() => {
 }
 
 .v-select {
-  /* color: white; */
+  /* border: 100px solid var(--color-neutral-200); */
+  /* color: var(--color-primary-500); */
+  background-color: whitesmoke;
+  /* color: burlywood; */
+  /* border: 1ch; */
+  border-radius: 5px;
+  height: 45px;
 }
 </style>

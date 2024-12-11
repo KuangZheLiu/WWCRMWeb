@@ -1,7 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-// import Dashboard from '../components/Dashboard.vue'
-// import InvData from '../components/InvData.vue'
-// import Customer from '../components/Customer.vue'
 import { useUserStore } from '../stores/user'
 
 const routes = [
@@ -63,6 +60,22 @@ const router = createRouter({
 // 導航守衛
 router.beforeEach((to, from, next) => {
   const userStore = useUserStore()
+
+  // 檢查本地存儲中的登入狀態
+  const savedUser = localStorage.getItem('user')
+  if (savedUser && !userStore.loginStatus) {
+    const userData = JSON.parse(savedUser)
+    userStore.$patch({
+      user: userData,
+      loginStatus: true,
+    })
+  }
+
+  // 如果前往登入頁面且已登入，重定向到首頁
+  if (to.path === '/login' && userStore.isLoggedIn) {
+    next('/')
+    return
+  }
 
   // 不需要驗證的路由直接放行
   if (!to.meta.requiresAuth) {

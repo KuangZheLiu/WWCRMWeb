@@ -50,12 +50,9 @@ const handleLogin = async () => {
   try {
     const success = await userStore.login(username.value, password.value)
     if (success) {
-      // 根據用戶角色決定跳轉頁面
-      if (userStore.userRole === 'Admin') {
-        router.push('/dashboard')
-      } else {
-        router.push('/customer')
-      }
+      const targetPath = userStore.userRole === 'Admin' ? '/dashboard' : '/customer'
+      // 使用 router.replace 而不是 router.push
+      await router.replace(targetPath)
     } else {
       alert('登入失敗')
     }

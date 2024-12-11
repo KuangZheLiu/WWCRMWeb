@@ -225,7 +225,7 @@ watch(route, () => {
 const handleLogout = async () => {
   await userStore.logout()
   router.push('/login')
-  // drawer.value = false
+  rail.value = true
   userMenu.value = false
 }
 </script>

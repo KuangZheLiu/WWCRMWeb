@@ -160,12 +160,16 @@ router.get('/annual-revenue', async (req, res) => {
   try {
     const { year, company } = req.query
     let sql = `
-      SELECT SUM(ProfitMoney * 1) as totalRevenue
-      FROM InvData
-      WHERE SUBSTRING(YM, 1, 4) = @year
+      SELECT ISNULL(SUM(i.ProfitMoney / ISNULL(m.ExchangeRate, 1)), 0) as totalRevenue
+      FROM InvData i
+      LEFT JOIN MonthCurr m ON
+        i.ComNo = m.ComNo
+        AND i.YM = m.YM
+        AND m.CurrNo = 'USD'
+      WHERE SUBSTRING(i.YM, 1, 4) = @year
     `
     if (company && company !== 'ALL') {
-      sql += ' AND ComNo = @company'
+      sql += ' AND i.ComNo = @company'
     }
 
     const result = await ExecSQL(sql, { year, company })
@@ -192,11 +196,15 @@ router.get('/company-revenue', async (req, res) => {
       ),
       RevenueData AS (
         SELECT
-          ComNo,
-          ISNULL(SUM(ProfitMoney * 1), 0) as totalRevenue
-        FROM InvData
-        WHERE SUBSTRING(YM, 1, 4) = @year
-        GROUP BY ComNo
+          i.ComNo,
+          ISNULL(SUM(i.ProfitMoney / ISNULL(m.ExchangeRate, 1)), 0) as totalRevenue
+        FROM InvData i
+        LEFT JOIN MonthCurr m ON
+          i.ComNo = m.ComNo
+          AND i.YM = m.YM
+          AND m.CurrNo = 'USD'
+        WHERE SUBSTRING(i.YM, 1, 4) = @year
+        GROUP BY i.ComNo
       )
       SELECT
         a.ComNo,

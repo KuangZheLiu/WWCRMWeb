@@ -27,7 +27,7 @@ export default defineComponent({
   setup(props) {
     const chartRef = ref(null)
     const chartInstance = ref(null)
-    const defaultTarget = 100000000
+    const defaultTarget = 10000000
 
     const fetchData = async () => {
       try {

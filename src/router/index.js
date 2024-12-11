@@ -6,27 +6,52 @@ import { useUserStore } from '../stores/user'
 
 const routes = [
   {
+    path: '/',
+    redirect: (to) => {
+      const userStore = useUserStore()
+      return userStore.userRole === 'Admin' ? '/dashboard' : '/customer'
+    },
+  },
+  {
     path: '/login',
     name: 'Login',
     component: () => import('../views/Login.vue'),
   },
   {
-    path: '/',
+    path: '/dashboard',
     name: 'Dashboard',
     component: () => import('../components/Dashboard.vue'),
-    meta: { requiresAuth: true, roles: ['admin'] },
+    meta: { requiresAuth: true, roles: ['Admin'] },
+    children: [
+      {
+        path: 'twtth',
+        name: 'TWTTH',
+        component: () => import('../components/dashboard/TWTTH.vue'), // 修改這裡
+        meta: { requiresAuth: true, roles: ['Admin'] },
+      },
+      // {
+      //   path: 'hscn',
+      //   name: 'HSCN',
+      //   component: () => import('../components/dashboard/CustomerAnalysis_HSCN.vue')
+      // },
+      // {
+      //   path: 'hskh',
+      //   name: 'HSKH',
+      //   component: () => import('../components/dashboard/CustomerAnalysis_HSKH.vue')
+      // }
+    ],
   },
   {
     path: '/invdata',
     name: 'InvData',
     component: () => import('../components/InvData.vue'),
-    meta: { requiresAuth: true, roles: ['admin'] },
+    meta: { requiresAuth: true, roles: ['Admin'] },
   },
   {
     path: '/customer',
     name: 'Customer',
     component: () => import('../components/Customer.vue'),
-    meta: { requiresAuth: true, roles: ['admin', 'user'] },
+    meta: { requiresAuth: true, roles: ['Admin', 'Sales'] },
   },
 ]
 
@@ -59,7 +84,7 @@ router.beforeEach((to, from, next) => {
   }
 
   // 如果是非管理員訪問根路徑,自動跳轉到 customer 頁面
-  if (to.path === '/' && userStore.userRole !== 'admin') {
+  if (to.path === '/' && userStore.userRole !== 'Admin') {
     next('/customer')
     return
   }

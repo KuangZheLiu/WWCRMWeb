@@ -51,7 +51,7 @@ const handleLogin = async () => {
     const success = await userStore.login(username.value, password.value)
     if (success) {
       // 根據用戶角色決定跳轉頁面
-      if (userStore.userRole === 'admin') {
+      if (userStore.userRole === 'Admin') {
         router.push('/dashboard')
       } else {
         router.push('/customer')

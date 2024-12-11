@@ -6,6 +6,13 @@ import { useUserStore } from '../stores/user'
 
 const routes = [
   {
+    path: '/',
+    redirect: (to) => {
+      const userStore = useUserStore()
+      return userStore.userRole === 'Admin' ? '/dashboard' : '/customer'
+    },
+  },
+  {
     path: '/login',
     name: 'Login',
     component: () => import('../views/Login.vue'),

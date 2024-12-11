@@ -109,6 +109,7 @@ const yearOptions = ref([])
 const totalRevenue = ref(0)
 const targetRevenue = ref(30000000)
 
+
 // 計算達成率
 const achievementRate = computed(() => {
   return ((totalRevenue.value / targetRevenue.value) * 100).toFixed(2)
@@ -155,6 +156,8 @@ const fetchRevenueData = async () => {
   }
 }
 
+
+
 const fetchAllData = () => {
   fetchRevenueData()
 }
@@ -185,7 +188,7 @@ onMounted(() => {
 .v-select {
   /* border: 100px solid var(--color-neutral-200); */
   /* color: var(--color-primary-500); */
-  background-color: whitesmoke;
+  background-color: white;
   /* color: burlywood; */
   /* border: 1ch; */
   border-radius: 5px;

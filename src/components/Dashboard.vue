@@ -1,33 +1,33 @@
 <template>
   <v-container fluid>
-    <h2 class="text-h4 mb-6">儀表板 Dashboard</h2>
+    <h2 class="text-h4 mb-4">儀表板 Dashboard</h2>
     <!-- 添加這一行來顯示子路由內容 -->
     <router-view v-if="$route.path !== '/dashboard'" />
 
     <template v-else>
       <!-- 上方統計區塊 -->
       <v-row class="mb">
-        <v-col cols="auto" md="auto" lg="auto" class="">
+        <v-col cols="auto" md="auto" lg="auto" class="pt-2">
         <v-select
           v-model="selectedYear"
           :items="yearOptions"
           label="選擇年度"
           density="compact"
+          class="no-border no-underline"
           @update:model-value="fetchAllData"
         ></v-select>
-      </v-col>
-      <v-col cols="auto" md="auto" lg="auto" class="">
+        <v-divider class="my-1"></v-divider>
         <v-select
           v-model="selectedCompany"
           :items="companyOptions"
           label="選擇公司"
           density="compact"
+          class="no-border no-underline"
           @update:model-value="fetchAllData"
         ></v-select>
       </v-col>
-    </v-row>
-
-    <v-row>
+      <v-col cols="auto" md="auto" lg="auto" class="">
+      </v-col>
       <v-col cols="auto" md="auto" lg="auto">
         <v-card>
           <v-card-text>
@@ -52,9 +52,11 @@
           </v-card-text>
         </v-card>
       </v-col>
-      <v-col cols="12" md="6" lg="6" class="mb-4">
-      </v-col>
     </v-row>
+
+    <!-- <v-row>
+      <v-col cols="12" md="6" lg="6" class="mb-4"></v-col>
+    </v-row> -->
 
     <!-- 下方圖表區塊 -->
     <v-row>
@@ -103,7 +105,7 @@ import CustomerAnalysisList from './dashboard/CustomerAnalysisList.vue'
 // ]
 
 const selectedYear = ref(new Date().getFullYear().toString())
-const selectedCompany = ref('ALL')
+const selectedCompany = ref('All')
 const companyOptions = ref([])
 const yearOptions = ref([])
 const totalRevenue = ref(0)
@@ -130,7 +132,7 @@ const fetchCompanyOptions = async () => {
   try {
     const response = await axios.get('http://localhost:8002/api/analysis/companies')
     companyOptions.value = [
-      { title: '全部公司', value: 'ALL' },
+      { title: '全部公司', value: 'All' },
       ...response.data.map(company => ({
         title: company.ComNo,
         value: company.ComNo
@@ -166,9 +168,9 @@ onMounted(() => {
   fetchCompanyOptions()
   fetchAllData()
 
-  // 生成年度選項（前5年到當年）
+  // 生成年度選項（前2年到當年）
   const currentYear = new Date().getFullYear()
-  yearOptions.value = Array.from({ length: 6 }, (_, i) => ({
+  yearOptions.value = Array.from({ length: 3 }, (_, i) => ({
     title: (currentYear - i).toString(),
     value: (currentYear - i).toString()
   }))
@@ -177,7 +179,7 @@ onMounted(() => {
 
 <style scoped>
 .v-container{
-  background-color: rgb(193, 190, 190);
+  background-color: rgb(190, 190, 190);
   width: auto;
 }
 
@@ -193,5 +195,17 @@ onMounted(() => {
   /* border: 1ch; */
   border-radius: 5px;
   height: 45px;
+
 }
+
+.no-border .no-underline .v-select__selections {
+  border-bottom: none !important;
+  box-shadow: none !important;
+}
+
+/* .no-underline .v-field__outline::before{
+  border-width: 0;
+} */
+
 </style>
+

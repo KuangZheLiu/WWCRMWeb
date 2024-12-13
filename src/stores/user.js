@@ -14,7 +14,7 @@ export const useUserStore = defineStore('user', {
         role: 'Admin',
       },
       {
-        username: 'test',
+        username: 'alex_lee',
         password: 'test',
         firstname: 'Alex',
         lastname: 'Lee',

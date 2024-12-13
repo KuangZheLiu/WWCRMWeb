@@ -29,13 +29,14 @@ const testdbRouter = require('./api/testdb.js')
 const crmdbRouter = require('./api/crmdb.js')
 const dbRouter = require('./api/db.js')
 const analysisDataRouter = require('./api/AnalysisData.js')
+const orderDataRouter = require('./api/OrderData.js')
 
 // server.use('/', user)
 server.use('/testdb', testdbRouter)
 server.use('/api/crmdb', crmdbRouter) // 使用路由器中間件
 server.use('/api/db', dbRouter)
 server.use('/api/analysis', analysisDataRouter)
-
+server.use('/api/orderdata', orderDataRouter)
 //3.active server
 // server.listen(8002, () => {
 //   console.log('Server Actived, port 8802')

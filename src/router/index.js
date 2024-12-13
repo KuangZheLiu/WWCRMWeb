@@ -50,6 +50,12 @@ const routes = [
     component: () => import('../components/Customer.vue'),
     meta: { requiresAuth: true, roles: ['Admin', 'Sales'] },
   },
+  {
+    path: '/sales',
+    name: 'Sales',
+    component: () => import('../components/Sales.vue'),
+    meta: { requiresAuth: true, roles: ['Admin', 'Sales'] },
+  },
 ]
 
 const router = createRouter({

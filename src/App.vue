@@ -105,6 +105,14 @@
           }"
 
         ></v-list-item>
+        <v-list-item
+          prepend-icon="mdi-account-group"
+          title="Sales Data"
+          @click.stop="() => {
+            handleNavigation('/sales');
+          }"
+
+        ></v-list-item>
       </v-list>
     </v-navigation-drawer>
 

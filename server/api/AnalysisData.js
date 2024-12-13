@@ -168,7 +168,7 @@ router.get('/annual-revenue', async (req, res) => {
         AND m.CurrNo = 'USD'
       WHERE SUBSTRING(i.YM, 1, 4) = @year
     `
-    if (company && company !== 'ALL') {
+    if (company && company !== 'All') {
       sql += ' AND i.ComNo = @company'
     }
 

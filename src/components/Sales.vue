@@ -7,22 +7,14 @@
       <v-card-text>
         <v-row>
           <v-col cols="12" md="3">
-            <v-select
-              v-model="filters.year"
-              :items="yearOptions"
-              label="年份"
-              clearable
-              density="compact"
-            ></v-select>
-          </v-col>
-          <v-col cols="12" md="3">
-            <v-select
-              v-model="filters.month"
-              :items="monthOptions"
-              label="月份"
-              clearable
-              density="compact"
-            ></v-select>
+            <v-text-field
+            v-model="filters.yearMonth"
+            type="month"
+            label="年月"
+            clearable
+            density="compact"
+            @update:model-value="handleFilterYMChange"
+            ></v-text-field>
           </v-col>
           <v-col cols="12" md="3">
             <v-select
@@ -308,6 +300,17 @@ const handleYMChange = (value) => {
   }
 }
 
+// 年月篩選處理方法
+const handleFilterYMChange = (value) => {
+  if (value) {
+    // 將 YYYY-MM 格式轉換為 YYYYMM 格式
+    const formattedYM = value.replace(/-/g, '')
+    filters.value.yearMonth = formattedYM
+  } else {
+    filters.value.yearMonth = ''
+  }
+}
+
 // 分頁和排序相關
 const pageSize = ref(50)
 const sortBy = ref([{ key: 'YM', order: 'desc' }])
@@ -319,19 +322,18 @@ const headers = [
   { title: '業務姓名', key: 'Sales', sortable: true },
   { title: '公司代號', key: 'ComNo', sortable: true },
   { title: '客戶名稱', key: 'OrderCom', sortable: true },
-  { title: '訂單編號', key: 'OrderNum', sortable: true },
+  { title: '訂單數量', key: 'OrderNum', sortable: true },
   { title: '產品名稱', key: 'OrderPro', sortable: true },
   { title: '訂單狀態', key: 'OrderSta', sortable: true },
   { title: '幣別', key: 'OrderCurr', sortable: true },
   { title: '應收金額', key: 'OrderAR', sortable: true },
-  { title: '實收金額', key: 'OrderAL', sortable: true },
+  { title: '未收金額', key: 'OrderAL', sortable: true },
   { title: '操作', key: 'actions', sortable: false },
 ]
 
 // 篩選條件
 const filters = ref({
-  year: '',
-  month: '',
+  yearMonth: '',
   salesName: '',
   comNo: '',
   orderCom: '',
@@ -353,21 +355,6 @@ const editForm = ref({
   OrderAL: 0,
 })
 
-// 下拉選項
-const yearOptions = computed(() => {
-  const currentYear = new Date().getFullYear()
-  return Array.from({ length: 2 }, (_, i) => ({
-    title: (currentYear - i).toString(),
-    value: (currentYear - i).toString(),
-  }))
-})
-
-const monthOptions = computed(() => {
-  return Array.from({ length: 12 }, (_, i) => ({
-    title: (i + 1).toString().padStart(2, '0'),
-    value: (i + 1).toString().padStart(2, '0'),
-  }))
-})
 
 const companyOptions = ref([])
 const salesOptions = ref([])
@@ -431,9 +418,9 @@ const fetchData = async () => {
     }
 
     // 篩選條件
-    if (filters.value.year && filters.value.month) {
-      params.append('year', filters.value.year)
-      params.append('month', filters.value.month)
+    if (filters.value.yearMonth) {
+      console.log('發送查詢的年月值:', filters.value.yearMonth) // 調試用
+      params.append('yearMonth', filters.value.yearMonth)
     }
 
     // 權限控制：Sales 角色只能看到自己的數據

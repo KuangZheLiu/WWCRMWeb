@@ -7,9 +7,9 @@ const buildWhereClause = (filters) => {
   const conditions = ['1=1']
   const params = {}
 
-  if (filters.year && filters.month) {
-    conditions.push('YM = @ym')
-    params.ym = `${filters.year}${filters.month}`
+  if (filters.yearMonth?.trim()) {
+    conditions.push('YM = @yearMonth')
+    params.yearMonth = filters.yearMonth.trim()
   }
   if (filters.salesName?.trim()) {
     conditions.push('Sales = @salesName')

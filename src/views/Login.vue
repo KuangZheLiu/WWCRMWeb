@@ -50,7 +50,7 @@ const handleLogin = async () => {
   try {
     const success = await userStore.login(username.value, password.value)
     if (success) {
-      const targetPath = userStore.userRole === 'Admin' ? '/dashboard' : '/customer'
+      const targetPath = userStore.userRole === 'Admin' ? '/dashboard' : '/sales'
       // 使用 router.replace 而不是 router.push
       await router.replace(targetPath)
     } else {

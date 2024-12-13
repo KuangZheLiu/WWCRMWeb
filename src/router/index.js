@@ -6,7 +6,7 @@ const routes = [
     path: '/',
     redirect: (to) => {
       const userStore = useUserStore()
-      return userStore.userRole === 'Admin' ? '/dashboard' : '/customer'
+      return userStore.userRole === 'Admin' ? '/dashboard' : '/sales'
     },
   },
   {
@@ -104,7 +104,7 @@ router.beforeEach((to, from, next) => {
 
   // 如果是非管理員訪問根路徑,自動跳轉到 customer 頁面
   if (to.path === '/' && userStore.userRole !== 'Admin') {
-    next('/customer')
+    next('/sales')
     return
   }
 

@@ -45,12 +45,13 @@
         </v-row>
         <v-row>
           <v-col cols="12" md="3">
-            <v-text-field
+            <v-select
               v-model="filters.orderCom"
+              :items="customerOptions"
               label="客戶名稱"
               clearable
               density="compact"
-            ></v-text-field>
+            ></v-select>
           </v-col>
           <v-col cols="12" md="3">
             <v-select
@@ -102,7 +103,7 @@
     >
       <!-- 自定義列渲染 -->
       <template  #[`item.YM`]="{ item }">
-        {{ formatYM(item.YM) }}
+        {{ formatYMForInput(item.YM) }}
       </template>
 
       <template #[`item.OrderAR`]="{ item }">
@@ -152,6 +153,7 @@
                   :rules="[(v) => !!v || '請選擇年月']"
                   required
                   @update:model-value="handleYMChange"
+                  :value="formatYMForInput(editForm.YM)"
                 ></v-text-field>
               </v-col>
 
@@ -199,9 +201,9 @@
               <v-col cols="12" md="6">
                 <v-text-field
                   v-model.number="editForm.OrderNum"
-                  label="訂單編號"
+                  label="訂單數量"
                   type="number"
-                  :rules="[(v) => v >= 0 || '訂單編號不能為負數']"
+                  :rules="[(v) => v >= 0 || '訂單數量不能為負數']"
                 ></v-text-field>
               </v-col>
 
@@ -282,11 +284,27 @@ const salesData = ref([])
 
 // 表單參考
 const form = ref(null)
+
+// 格式化 YM 為輸入框格式 (YYYY-MM)
+const formatYMForInput = (ym) => {
+  if (!ym) return ''
+  // 如果已經是 YYYY-MM 格式就直接返回
+  if (ym.includes('-')) return ym
+  // 否則轉換 YYYYMM 為 YYYY-MM
+  return `${ym.substring(0, 4)}-${ym.substring(4, 6)}`
+}
+
+// 格式化 YM 為數據庫格式 (YYYYMM)
+const formatYMForDB = (ym) => {
+  if (!ym) return ''
+  // 如果包含 - 則移除
+  return ym.replace(/-/g, '')
+}
+
 // 處理年月變更
 const handleYMChange = (value) => {
   if (value) {
-    const [year, month] = value.split('-')
-    editForm.value.YM = `${year}${month}`
+    editForm.value.YM = formatYMForDB(value)
   }
 }
 
@@ -338,7 +356,7 @@ const editForm = ref({
 // 下拉選項
 const yearOptions = computed(() => {
   const currentYear = new Date().getFullYear()
-  return Array.from({ length: 3 }, (_, i) => ({
+  return Array.from({ length: 2 }, (_, i) => ({
     title: (currentYear - i).toString(),
     value: (currentYear - i).toString(),
   }))
@@ -353,6 +371,7 @@ const monthOptions = computed(() => {
 
 const companyOptions = ref([])
 const salesOptions = ref([])
+const customerOptions = ref([])
 
 // 權限控制
 const hasPermission = computed(() => {
@@ -386,11 +405,6 @@ const handleTableOptionsChange = (options) => {
   fetchData()
 }
 
-// 格式化函數
-const formatYM = (ym) => {
-  if (!ym) return ''
-  return `${ym.substring(0, 4)}/${ym.substring(4, 6)}`
-}
 
 const formatCurrency = (value) => {
   return new Intl.NumberFormat('zh-TW', {
@@ -474,11 +488,27 @@ const fetchCompanyOptions = async () => {
   }
 }
 
+const fetchCustomerOptions = async () => {
+  try {
+    const response = await axios.get('http://localhost:8002/api/orderdata/customernames')
+    customerOptions.value = response.data.map((customer) => ({
+      title: customer.OrderCom,
+      value: customer.OrderCom,
+    }))
+  } catch (error) {
+    console.error('獲取客戶列表失敗:', error)
+  }
+}
+
 // 新增/編輯/刪除方法
 const openAddDialog = () => {
   isEditing.value = false
+  const today = new Date()
+  const year = today.getFullYear()
+  const month = (today.getMonth() + 1).toString().padStart(2, '0')
+
   editForm.value = {
-    YM: '',
+    YM: `${year}-${month}`,  // 預設為當前年月
     Sales: userStore.userRole === 'Admin' ? '' : userStore.user?.username,
     ComNo: '',
     OrderCom: '',
@@ -501,7 +531,10 @@ const canEdit = (item) => {
 const openEditDialog = (item) => {
   if (!canEdit(item)) return
   isEditing.value = true
-  editForm.value = { ...item }
+  editForm.value = {
+    ...item,
+    YM: formatYMForInput(item.YM)
+  }
   dialog.value = true
 }
 
@@ -512,10 +545,15 @@ const handleSubmit = async () => {
 
   loading.value = true
   try {
+    const submitData = {
+      ...editForm.value,
+      YM: formatYMForDB(editForm.value.YM)
+    }
+
     if (isEditing.value) {
-      await axios.put(`http://localhost:8002/api/orderdata/${editForm.value.YM}`, editForm.value)
+      await axios.put(`http://localhost:8002/api/orderdata/${submitData.YM}`, submitData)
     } else {
-      await axios.post('http://localhost:8002/api/orderdata', editForm.value)
+      await axios.post('http://localhost:8002/api/orderdata', submitData)
     }
     dialog.value = false
     fetchData()
@@ -560,6 +598,7 @@ watch(
 onMounted(() => {
   fetchCompanyOptions()
   fetchSalesOptions()
+  fetchCustomerOptions()
   if (userStore.userRole === 'Sales') {
     filters.value.salesName = userStore.user?.username
   }

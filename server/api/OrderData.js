@@ -164,4 +164,19 @@ router.get('/salesnames', async (req, res) => {
   }
 })
 
+// 獲取客戶名稱列表
+router.get('/customernames', async (req, res) => {
+  try {
+    const sql = `
+      SELECT DISTINCT OrderCom
+      FROM OrderData WITH (NOLOCK)
+      ORDER BY OrderCom
+    `
+    const result = await ExecSQL(sql)
+    res.json(result.recordset)
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message })
+  }
+})
+
 module.exports = router

@@ -105,6 +105,14 @@
           }"
 
         ></v-list-item>
+        <v-list-item
+          prepend-icon="mdi-account-group"
+          title="Sales Data"
+          @click.stop="() => {
+            handleNavigation('/sales');
+          }"
+
+        ></v-list-item>
       </v-list>
     </v-navigation-drawer>
 
@@ -225,7 +233,7 @@ watch(route, () => {
 const handleLogout = async () => {
   await userStore.logout()
   router.push('/login')
-  // drawer.value = false
+  rail.value = true
   userMenu.value = false
 }
 </script>

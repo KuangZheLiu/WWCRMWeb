@@ -9,7 +9,8 @@
           label="開始日期"
           @update:model-value="fetchData"
           density="compact"
-          class="mr-2"
+          width="50px"
+
         ></v-text-field>
         <span class="mx-2">-</span>
         <v-text-field
@@ -18,6 +19,7 @@
           label="結束日期"
           @update:model-value="fetchData"
           density="compact"
+          width="50px"
         ></v-text-field>
       </div>
       <div class="chart-container flex-grow-1">
@@ -147,10 +149,10 @@ export default defineComponent({
 canvas {
   width: 100% !important;
   /* height: 100% !important; */
-  height: 500px !important;
+  height: 400px !important;
 }
 
 .v-card-text {
-  padding-bottom: 16px;
+  padding-bottom: 2px;
 }
 </style>

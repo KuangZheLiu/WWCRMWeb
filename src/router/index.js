@@ -1,7 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-// import Dashboard from '../components/Dashboard.vue'
-// import InvData from '../components/InvData.vue'
-// import Customer from '../components/Customer.vue'
 import { useUserStore } from '../stores/user'
 
 const routes = [
@@ -9,7 +6,7 @@ const routes = [
     path: '/',
     redirect: (to) => {
       const userStore = useUserStore()
-      return userStore.userRole === 'Admin' ? '/dashboard' : '/customer'
+      return userStore.userRole === 'Admin' ? '/dashboard' : '/sales'
     },
   },
   {
@@ -53,6 +50,12 @@ const routes = [
     component: () => import('../components/Customer.vue'),
     meta: { requiresAuth: true, roles: ['Admin', 'Sales'] },
   },
+  {
+    path: '/sales',
+    name: 'Sales',
+    component: () => import('../components/Sales.vue'),
+    meta: { requiresAuth: true, roles: ['Admin', 'Sales'] },
+  },
 ]
 
 const router = createRouter({
@@ -63,6 +66,22 @@ const router = createRouter({
 // 導航守衛
 router.beforeEach((to, from, next) => {
   const userStore = useUserStore()
+
+  // 檢查本地存儲中的登入狀態
+  const savedUser = localStorage.getItem('user')
+  if (savedUser && !userStore.loginStatus) {
+    const userData = JSON.parse(savedUser)
+    userStore.$patch({
+      user: userData,
+      loginStatus: true,
+    })
+  }
+
+  // 如果前往登入頁面且已登入，重定向到首頁
+  if (to.path === '/login' && userStore.isLoggedIn) {
+    next('/')
+    return
+  }
 
   // 不需要驗證的路由直接放行
   if (!to.meta.requiresAuth) {
@@ -85,7 +104,7 @@ router.beforeEach((to, from, next) => {
 
   // 如果是非管理員訪問根路徑,自動跳轉到 customer 頁面
   if (to.path === '/' && userStore.userRole !== 'Admin') {
-    next('/customer')
+    next('/sales')
     return
   }
 

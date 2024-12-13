@@ -3,6 +3,7 @@ import { defineStore } from 'pinia'
 export const useUserStore = defineStore('user', {
   state: () => ({
     user: null,
+    loginStatus: false,
     users: [
       {
         username: 'admin',
@@ -13,7 +14,7 @@ export const useUserStore = defineStore('user', {
         role: 'Admin',
       },
       {
-        username: 'test',
+        username: 'alex_lee',
         password: 'test',
         firstname: 'Alex',
         lastname: 'Lee',
@@ -29,13 +30,23 @@ export const useUserStore = defineStore('user', {
 
       if (user) {
         this.user = user
+        this.loginStatus = true
+        localStorage.setItem('user', JSON.stringify(user))
         return true
       }
       return false
     },
 
+    async setUser(userData) {
+      this.user = userData
+      this.loginStatus = true
+      localStorage.setItem('user', JSON.stringify(userData))
+    },
+
     async logout() {
       this.user = null
+      this.loginStatus = false
+      localStorage.removeItem('user')
     },
 
     async changePassword(oldPassword, newPassword) {
@@ -54,7 +65,7 @@ export const useUserStore = defineStore('user', {
   },
 
   getters: {
-    isLoggedIn: (state) => !!state.user,
+    isLoggedIn: (state) => state.loginStatus,
     userRole: (state) => state.user?.role,
   },
 })

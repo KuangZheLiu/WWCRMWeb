@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <h1 class="text-h4 mb-6">業務銷售資料管理</h1>
+    <h1 class="text-h4 mb-6">業務日誌管理</h1>
 
     <!-- 查詢區域 -->
     <v-card class="mb-6">

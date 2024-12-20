@@ -4,6 +4,7 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 
 import { createVuetify } from 'vuetify'
+import { VCalendar } from 'vuetify/labs/VCalendar'
 import 'vuetify/styles'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
@@ -15,7 +16,10 @@ import router from './router'
 const app = createApp(App)
 
 const vuetify = createVuetify({
-  components,
+  components: {
+    ...components,
+    VCalendar,
+  },
   directives,
   icons: {
     defaultSet: 'mdi', // 設置默認圖標集

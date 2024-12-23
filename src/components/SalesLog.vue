@@ -27,6 +27,13 @@
           {{ formatDate(item.Date) }}
         </template>
 
+        <!-- 清單視圖中添加狀態顏色 -->
+        <template #[`item.Status`]="{ item }">
+          <v-chip :color="getEventColor(item.Status)" small>
+            {{ item.Status }}
+          </v-chip>
+        </template>
+
         <template #[`item.actions`]="{ item }">
           <div class="d-flex">
             <v-btn
@@ -56,29 +63,43 @@
         :events="calendarEvents"
         :event-color="getEventColor"
         :event-ripple="false"
-        :weekdays="[1, 2, 3, 4, 5, 6, 0]"
+        :weekdays="[0, 1, 2, 3, 4, 5, 6]"
         :type="calendarType"
         @click:event="openEditDialog"
         @click:date="handleDateClick"
         locale="zh-TW"
         color="primary"
+        :short-weekdays="false"
+        :show-month-on-first="false"
+        :event-more="true"
+        :event-more-text="(count) => `還有 ${count} 個事件`"
       >
+        <!-- 日曆事件 -->
         <template v-slot:event="{ event }">
           <div class="pa-2">
-            <div class="font-weight-bold">{{ event.name }}</div>
-            <div class="text-caption">
-              {{ event.details.Customer }} - {{ event.details.Status }}
-            </div>
+            <div class="d-flex align-center">
+              <v-chip
+                :color="getEventColor(event.details.Status)"
+                size="small"
+                class="mr-2"
+              >
+              {{ event.details.Status }}
+              </v-chip>
+            <div class="font-weight-bold">{{ event.details.Customer }}</div>
           </div>
-        </template>
+          <!-- <div class="text-caption">
+            {{ event.details.Sales }}
+          </div> -->
+          </div>
+</template>
       </v-calendar>
 
     <!-- 日曆類型切換按鈕 -->
      <v-card-actions>
         <v-btn-toggle v-model="calendarType" mandatory>
+          <v-btn value="year">年視圖</v-btn>
           <v-btn value="month">月視圖</v-btn>
           <v-btn value="week">週視圖</v-btn>
-          <v-btn value="day">日視圖</v-btn>
         </v-btn-toggle>
       </v-card-actions>
     </v-card>
@@ -267,17 +288,19 @@ const calendarEvents = computed(() => {
     end: new Date(log.Date),
     timed: false,
     color: getEventColor(log.Status),
-    details: log
+    details: log,
+    category: 'sales',
+    textColor: 'white'
   }))
 })
 
 // 根據狀態獲取事件顏色
 const getEventColor = (status) => {
   const colors = {
-    'Closing': 'green',
-    'Negotiation': 'orange',
-    'Demo': 'blue',
-    'Qualification': 'grey'
+    'Closing': 'success',       // 綠色
+    'Negotiation': 'warning',   // 橙色
+    'Demo': 'info',            // 藍色
+    'Qualification': 'grey'     // 灰色
   }
   return colors[status] || 'primary'
 }
@@ -400,5 +423,13 @@ onMounted(() => {
 
 .v-calendar-event:hover {
   opacity: 0.8;
+}
+
+.v-chip {
+  font-size: 0.75rem;
+}
+
+.v-calendar-event__content {
+  background-color: transparent !important;
 }
 </style>

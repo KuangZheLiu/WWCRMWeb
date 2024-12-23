@@ -98,7 +98,7 @@
         ></v-list-item>
 
         <v-list-item
-          prepend-icon="mdi-account-group"
+          prepend-icon="mdi-briefcase"
           title="Customer Data"
           @click.stop="() => {
             handleNavigation('/customer');
@@ -107,14 +107,14 @@
         ></v-list-item>
         <v-list-item
           prepend-icon="mdi-account-group"
-          title="Sales Data"
+          title="Sales List"
           @click.stop="() => {
             handleNavigation('/sales');
           }"
 
         ></v-list-item>
         <v-list-item
-          prepend-icon="mdi-account-group"
+          prepend-icon="mdi-account-clock"
           title="Sales Log"
           @click.stop="() => {
             handleNavigation('/saleslog');

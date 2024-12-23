@@ -1,11 +1,11 @@
 <template>
   <div class="customer-container">
-    <h2>客戶資料</h2>
-    <div class="filter-section">
+    <h1 class="text-h4 mb-6">CRM資料統計來源</h1>
+    <!-- <div class="filter-section">
       <input v-model="filters.companyName" placeholder="公司名稱" />
       <input v-model="filters.customerName" placeholder="客戶名稱" />
       <button @click="handleFilter">搜尋</button>
-    </div>
+    </div> -->
 
     <table class="data-table">
       <thead>

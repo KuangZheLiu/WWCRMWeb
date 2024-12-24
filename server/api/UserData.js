@@ -64,4 +64,69 @@ router.put('/password', async (req, res) => {
   }
 })
 
+// 獲取所有負責地區選項
+router.get('/areas', async (req, res) => {
+  try {
+    const sql = `
+      SELECT DISTINCT Area
+      FROM UserData
+      WHERE Area IS NOT NULL
+      ORDER BY Area
+    `
+    const result = await ExecSQL(sql)
+    res.json({
+      success: true,
+      data: result.recordset,
+    })
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      error: err.message,
+    })
+  }
+})
+
+// 獲取所有職稱選項
+router.get('/jobtitles', async (req, res) => {
+  try {
+    const sql = `
+      SELECT DISTINCT JobTitle
+      FROM UserData
+      WHERE JobTitle IS NOT NULL
+      ORDER BY JobTitle
+    `
+    const result = await ExecSQL(sql)
+    res.json({
+      success: true,
+      data: result.recordset,
+    })
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      error: err.message,
+    })
+  }
+})
+
+router.get('/comnos', async (req, res) => {
+  try {
+    const sql = `
+      SELECT DISTINCT ComNo
+      FROM UserData
+      WHERE ComNo IS NOT NULL
+      ORDER BY ComNo
+    `
+    const result = await ExecSQL(sql)
+    res.json({
+      success: true,
+      data: result.recordset,
+    })
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      error: err.message,
+    })
+  }
+})
+
 module.exports = router

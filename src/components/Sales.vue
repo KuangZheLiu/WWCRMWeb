@@ -6,27 +6,45 @@
     <v-card class="mb-6">
       <v-card-text>
         <v-row>
-          <v-col cols="12" md="4">
+          <!-- <v-col cols="12" md="4">
             <v-text-field
               v-model="filters.userID"
               label="登入帳號"
               clearable
               density="compact"
             ></v-text-field>
-          </v-col>
-          <v-col cols="12" md="4">
+          </v-col> -->
+          <!-- <v-col cols="12" md="4">
             <v-text-field
               v-model="filters.nameCN"
               label="業務姓名"
               clearable
               density="compact"
             ></v-text-field>
+          </v-col> -->
+          <v-col cols="12" md="3">
+            <v-select
+              v-model="filters.area"
+              :items="areaOptions"
+              label="負責地區"
+              clearable
+              density="compact"
+            ></v-select>
           </v-col>
-          <v-col cols="12" md="4">
+          <v-col cols="12" md="3">
             <v-select
               v-model="filters.comNo"
               :items="companyOptions"
               label="公司代號"
+              clearable
+              density="compact"
+            ></v-select>
+          </v-col>
+          <v-col cols="12" md="3">
+            <v-select
+              v-model="filters.jobTitle"
+              :items="jobTitleOptions"
+              label="職稱"
               clearable
               density="compact"
             ></v-select>
@@ -72,6 +90,8 @@ import axios from 'axios'
 const loading = ref(false)
 const salesData = ref([])
 const companyOptions = ref([])
+const areaOptions = ref([])
+const jobTitleOptions = ref([])
 
 // 表頭定義
 const headers = [
@@ -93,7 +113,9 @@ const sortBy = ref([{ key: 'ComNo', order: 'asc' }])
 const filters = ref({
   userID: '',
   nameCN: '',
-  comNo: ''
+  area: '',
+  comNo: '',
+  jobTitle: ''
 })
 
 // 獲取資料
@@ -107,9 +129,10 @@ const fetchData = async () => {
           user.UserID.toLowerCase().includes(filters.value.userID.toLowerCase())
         const matchName = !filters.value.nameCN ||
           user.NameCN.toLowerCase().includes(filters.value.nameCN.toLowerCase())
-        const matchCompany = !filters.value.comNo ||
-          user.ComNo === filters.value.comNo
-        return matchUserID && matchName && matchCompany
+        const matchArea = !filters.value.area || user.Area === filters.value.area
+        const matchCompany = !filters.value.comNo || user.ComNo === filters.value.comNo
+        const matchJobTitle = !filters.value.jobTitle || user.JobTitle === filters.value.jobTitle
+        return matchUserID && matchName && matchArea && matchCompany && matchJobTitle
       })
     }
   } catch (error) {
@@ -122,13 +145,34 @@ const fetchData = async () => {
 // 獲取公司選項
 const fetchCompanyOptions = async () => {
   try {
-    const response = await axios.get('http://localhost:8002/api/analysis/companies')
-    companyOptions.value = response.data.map(company => ({
-      title: company.ComNo,
-      value: company.ComNo
-    }))
+    const response = await axios.get('http://localhost:8002/api/userdata/comnos')
+    companyOptions.value = response.data.data.map(item => item.ComNo)
   } catch (error) {
     console.error('獲取公司列表失敗:', error)
+  }
+}
+
+// 獲取地區選項
+const fetchAreaOptions = async () => {
+  try {
+    const response = await axios.get('http://localhost:8002/api/userdata/areas')
+    if (response.data.success) {
+      areaOptions.value = response.data.data.map(item => item.Area)
+    }
+  } catch (error) {
+    console.error('獲取地區列表失敗:', error)
+  }
+}
+
+// 獲取職稱選項
+const fetchJobTitleOptions = async () => {
+  try {
+    const response = await axios.get('http://localhost:8002/api/userdata/jobtitles')
+    if (response.data.success) {
+      jobTitleOptions.value = response.data.data.map(item => item.JobTitle)
+    }
+  } catch (error) {
+    console.error('獲取職稱列表失敗:', error)
   }
 }
 
@@ -139,6 +183,8 @@ const handleSearch = () => {
 
 onMounted(() => {
   fetchCompanyOptions()
+  fetchAreaOptions()
+  fetchJobTitleOptions()
   fetchData()
 })
 </script>

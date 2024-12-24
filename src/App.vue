@@ -106,6 +106,7 @@
 
         ></v-list-item>
         <v-list-item
+          v-if="userStore.userRole === 'Admin'"
           prepend-icon="mdi-account-group"
           title="Sales List"
           @click.stop="() => {

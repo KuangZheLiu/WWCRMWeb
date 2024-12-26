@@ -126,6 +126,6 @@ export default defineComponent({
 
 canvas {
   width: 100% !important;
-  height: 500px !important;
+  height: 450px !important;
 }
 </style>

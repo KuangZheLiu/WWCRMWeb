@@ -413,8 +413,14 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.v-data-table {
+  width: 100%;
+  overflow: scroll;
+}
+
 .v-calendar {
   height: 600px;
+
 }
 
 .v-calendar-event {

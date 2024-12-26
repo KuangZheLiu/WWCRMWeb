@@ -3,7 +3,7 @@
     <h1 class="text-h4 mb-6">業務名單</h1>
 
     <!-- 查詢區域 -->
-    <v-card class="mb-6">
+    <v-card class="mb-4" md="2">
       <v-card-text>
         <v-row>
           <!-- <v-col cols="12" md="4">
@@ -22,7 +22,7 @@
               density="compact"
             ></v-text-field>
           </v-col> -->
-          <v-col cols="12" md="3">
+          <v-col cols="12" md="2">
             <v-select
               v-model="filters.area"
               :items="areaOptions"
@@ -31,7 +31,7 @@
               density="compact"
             ></v-select>
           </v-col>
-          <v-col cols="12" md="3">
+          <v-col cols="12" md="2">
             <v-select
               v-model="filters.comNo"
               :items="companyOptions"
@@ -40,7 +40,7 @@
               density="compact"
             ></v-select>
           </v-col>
-          <v-col cols="12" md="3">
+          <v-col cols="12" md="2">
             <v-select
               v-model="filters.jobTitle"
               :items="jobTitleOptions"
@@ -49,13 +49,14 @@
               density="compact"
             ></v-select>
           </v-col>
-        </v-row>
-        <v-row>
-          <v-col cols="12" class="d-flex justify-end">
+          <v-col cols="12" md="2" class="d-flex justify-end">
             <v-btn color="primary" @click="handleSearch" :loading="loading">
               搜尋
             </v-btn>
           </v-col>
+        </v-row>
+        <v-row>
+
         </v-row>
       </v-card-text>
     </v-card>
@@ -192,5 +193,6 @@ onMounted(() => {
 <style scoped>
 .v-data-table {
   width: 100%;
+  overflow: auto;
 }
 </style>

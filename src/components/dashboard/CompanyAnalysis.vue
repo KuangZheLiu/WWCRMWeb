@@ -2,14 +2,14 @@
   <v-card height="100%">
     <v-card-title>公司訂單趨勢分析</v-card-title>
     <v-card-text class="fill-height d-flex flex-column">
-      <div class="d-flex align-center mb-4">
+      <div class="d-flex align-center ">
         <v-text-field
           v-model="startDate"
           type="month"
           label="開始日期"
           @update:model-value="fetchData"
           density="compact"
-          width="50px"
+          width="auto"
 
         ></v-text-field>
         <span class="mx-2">-</span>
@@ -19,7 +19,7 @@
           label="結束日期"
           @update:model-value="fetchData"
           density="compact"
-          width="50px"
+          width="auto"
         ></v-text-field>
       </div>
       <div class="chart-container flex-grow-1">

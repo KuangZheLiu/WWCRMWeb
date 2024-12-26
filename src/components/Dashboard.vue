@@ -60,13 +60,13 @@
 
     <!-- 下方圖表區塊 -->
     <v-row>
-      <v-col cols="12" lg="6" md="5">
+      <v-col cols="12" lg="6" md="5" xl="12">
         <CompanyAnalysis
           :selected-year="selectedYear"
           :selected-company="selectedCompany"
         />
       </v-col>
-      <v-col cols="12" lg="6" md="5" xl="3">
+      <v-col cols="12" lg="6" md="5" xl="12">
         <RevenueKPI
           :selected-year="selectedYear"
         />
@@ -178,6 +178,8 @@ onMounted(() => {
 </script>
 
 <style scoped>
+
+
 .v-container{
   background-color: rgb(190, 190, 190);
   width: auto;

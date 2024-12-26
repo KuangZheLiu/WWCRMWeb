@@ -54,7 +54,7 @@ const routes = [
     path: '/sales',
     name: 'Sales',
     component: () => import('../components/Sales.vue'),
-    meta: { requiresAuth: true, roles: ['Admin', 'Sales'] },
+    meta: { requiresAuth: true, roles: ['Admin'] },
   },
   {
     path: '/saleslog',
@@ -104,13 +104,14 @@ router.beforeEach((to, from, next) => {
   // 檢查角色權限
   if (to.meta.roles && !to.meta.roles.includes(userStore.userRole)) {
     alert('無權限訪問此頁面')
-    next(from.path)
+    // next(from.path)
+    next('/saleslog')
     return
   }
 
-  // 如果是非管理員訪問根路徑,自動跳轉到 customer 頁面
+  // 如果是非管理員訪問根路徑,自動跳轉到 saleslog 頁面
   if (to.path === '/' && userStore.userRole !== 'Admin') {
-    next('/sales')
+    next('/saleslog')
     return
   }
 

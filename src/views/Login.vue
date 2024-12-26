@@ -1,7 +1,7 @@
 <template>
   <v-container fluid fill-height>
     <v-row align="center" justify="center">
-      <v-col cols="12" sm="8" md="4">
+      <v-col cols="12" sm="8" md="3">
         <v-card class="elevation-12">
           <v-card-title>CRM Website Login</v-card-title>
           <v-card-text>
